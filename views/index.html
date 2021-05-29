@@ -4,6 +4,7 @@
 	<title>GoJs Project</title>
 	<script type="text/javascript" src="javascripts/go-debug.js"></script>
 </head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -50,8 +51,8 @@
 		</div>
 		<button id="SaveButton" onclick="save()">Save</button>
 		<button onclick="load()">Load</button>
-		<label>Add nodes to Diagram (excel.csv)</label>
-		<input type="file" id="fileUpload" onchange="readExcel(event)" accept=""></input>
+		<label>Add nodes to Diagram (.xls)</label>
+		<input type="file" id="upload" name="files[]" accept=""></input>
 		<label>Load complete diagram from .txt file</label>
 		<input type="file" onchange="readFile(event)" accept="text/plain"></input>
 		<div class="footer" style="padding:2px">
@@ -189,7 +190,7 @@
 							wrap: go.TextBlock.WrapFit,
 							editable: true
 						},
-						new go.Binding("text").makeTwoWay()),
+						new go.Binding("text", "name").makeTwoWay()),
 					{
 						contextMenu:            //define a context menu foe each node
 							$("ContextMenu",
@@ -296,6 +297,7 @@
 						}
 					})
 			);
+
 		// Show the diagram's model in JSON format that the user may edit
 		function save() {
 			saveDiagramProperties();  // do this first, before writing to JSON
@@ -313,119 +315,46 @@
 			jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
 			download(jsonData, 'myDiagram.txt', 'text/plain');
 		}
-
-
-		function ExcelToJSON(file) {
+		var ExcelToJSON = function () {
 			this.parseExcel = function (file) {
 				var reader = new FileReader();
-
+				
 				reader.onload = function (e) {
 					var data = e.target.result;
 					var workbook = XLSX.read(data, {
 						type: 'binary'
 					});
-
 					workbook.SheetNames.forEach(function (sheetName) {
 						// Here is your object
 						var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
 						var json_object = JSON.stringify(XL_row_object);
-						console.log(json_object);
+						jQuery('#xlx_json').val(json_object);
+						var json1 = JSON.parse(json_object);
 
+						diagram.startTransaction("make new node");
+						for (i in json1) {
+							if (json1[i].name != null) {
+								console.log(json1[i]);
+								diagram.model.addNodeData(json1[i]);
+							}
+						}
+						diagram.commitTransaction("make new node");
 					})
-
 				};
-
 				reader.onerror = function (ex) {
 					console.log(ex);
 				};
-
 				reader.readAsBinaryString(file);
 			};
 		};
 
+		function handleFileSelect(evt) {
 
-		function readExcel(event) {
-			//var fileUpload = document.getElementById("fileUpload");
-			var input = event.target;
-			var reader = new FileReader();
-
-			//For Browsers other than IE.
-
-			reader.onload = function (e) {
-				var file = reader.result;
-				GetTableFromExcel(file);
-			};
-
-			reader.readAsArrayBuffer(input.files[0]);
-
-			/*					
-			var input = event.target;
-			var reader = new FileReader();
-			  reader.onload = function(){
-				var file = reader.result;
-				console.log(file);
-				json = ExceltoJSON(file);
-				
-				diagram.startTransaction("make new node");
-				for (var key in json)	{
-					diagram.model.addNodeData(json[key]);
-					//console.log(json[key]);
-				}
-				diagram.commitTransaction("make new node");
-				
-			  };
-			  reader.readAsText(input.files[0]);
-			*/
-
-
-		}
-
-		function GetTableFromExcel(data) {
-			//Read the Excel File data in binary
-			var workbook = XLSX.read(data, {
-				type: 'binary'
-			});
-
-			//get the name of First Sheet.
-			var Sheet = workbook.SheetNames[0];
-
-			//Read all rows from First Sheet into an JSON array.
-
-			//Add the data rows from Excel file.
-			for (var j = 0; j < 1; j++) {
-				var Sheet = workbook.SheetNames[i];
-				var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[Sheet]);
-				for (var i = 0; i < 3; i++) {
-
-					console.log(excelRows[i]);
-					diagram.model.addNodeData(excelRows[i]);
-				}
-
-			}
-
-
-
+			var files = evt.target.files; // FileList object
+			var xl2json = new ExcelToJSON();
+			xl2json.parseExcel(files[0]);
 		};
-
-
-		function csvJSON(csv) {
-			const lines = csv.split('\n')
-			const result = []
-			const headers = lines[0].split(',')
-
-			for (let i = 1; i < lines.length; i++) {
-				if (!lines[i])
-					continue
-				const obj = {}
-				const currentline = lines[i].split(',')
-
-				for (let j = 0; j < headers.length; j++) {
-					obj[headers[j]] = currentline[j]
-				}
-				result.push(obj)
-			}
-			return result
-		}
+		document.getElementById('upload').addEventListener('change', handleFileSelect, false);
 
 		function readFile() {
 			var input = event.target;
@@ -454,16 +383,16 @@
 
 		var nodeDataArray = [
 			{
-				key: "node1", text: "DBMS", version: "1.0.0.2", descr: "Database Management System", releaseDate: "2010-08-19", shutdownDate: "2015-03-11",
+				key: "node1", name: "DBMS", version: "1.0.0.2", Description: "Database Management System", start: "2010-08-19", shutdown: "2015-03-11",
 				fill: "lightgray", figure: "Database", loc: "100,50"
 			},
 			{
-				key: "node2", text: "ERP", version: "6.3.2", descr: "Enterprise Resource Planning", releaseDate: "2011-10-30", shutdownDate: "2017-05-28",
+				key: "node2", name: "ERP", version: "6.3.2", Description: "Enterprise Resource Planning", start: "2011-10-30", shutdown: "2017-05-28",
 				fill: "lightblue", figure: "Procedure", loc: "0,0",
 			},
 			{
-				key: "node3", text: "Supply Chain Management", version: "2.0.2", descr: "...", releaseDate: "2011-12-01",
-				shutdownDate: "2018-02-14",
+				key: "node3", name: "Supply Chain Management", version: "2.0.2", Description: "...", start: "2011-12-01",
+				shutdown: "2018-02-14",
 				fill: "lightblue", loc: "100, 100"
 			}
 		];
@@ -491,11 +420,11 @@
 				// uncomment this line to only inspect the named properties below instead of all properties on each object:
 				// includesOwnProperties: false,
 				properties: {
-					"text": {},
+					"name": {},
 					"version": { show: Inspector.showIfNode },
-					"descr:": {},
-					"releaseDate": { show: Inspector.showIfNode },
-					"shutdownDate": { show: Inspector.showIfNode },
+					"Description:": {},
+					"start": { show: Inspector.showIfNode },
+					"shutdown": { show: Inspector.showIfNode },
 					"personalData?:": { show: Inspector.showIfLink, type: "checkbox" },
 				}
 			});
