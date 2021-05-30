@@ -1,46 +1,44 @@
 <html>
 
 <head>
-	<title>GoJs Project</title>
-	<script type="text/javascript" src="javascripts/go-debug.js"></script>
+    <title>GoJs Project</title>
+    <script type="text/javascript" src="javascripts/go-debug.js"></script>
 </head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-	.diagram {
-		border: solid 1 px blue;
-		width: 1000px;
-		height: 800px;
-		margin-left: 20%
-	}
-
-	#toolbar {
-		width: 100%;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		border: solid 1 px blue
-	}
-
-	.row:after {
-		content: "";
-		display: table;
-		clear: both;
-	}
+    .diagram {
+        border: solid 1 px blue;
+        width: 1000px;
+        height: 800px;
+        margin-left: 20%
+    }
+    
+    #toolbar {
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border: solid 1 px blue
+    }
+    
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 </style>
 
 <body>
-	<h1>Software-Visualisation-Tool</h1>
-	<div id="toolbar"> </div>
-	<div class="main">
-		<div class="row" style="width: 100%; display: flex; justify-content: space-between">
-			<div class="column side" id="myPaletteDiv"
-				style="width: 200px; height: 620px; margin-right: 2px; background-color: whitesmoke; border: solid 1px black">
-			</div>
-			<div class="column middle" id="myDiagramDiv"
-				style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
-			<div class="column right"> <span style="display: inline-block; vertical-align: top;">
+    <h1>Software-Visualisation-Tool</h1>
+    <div id="toolbar"> </div>
+    <div class="main">
+        <div class="row" style="width: 100%; display: flex; justify-content: space-between">
+            <div class="column side" id="myPaletteDiv" style="width: 200px; height: 620px; margin-right: 2px; background-color: whitesmoke; border: solid 1px black">
+            </div>
+            <div class="column middle" id="myDiagramDiv" style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
+            <div class="column right"> <span style="display: inline-block; vertical-align: top;">
 					<div id="myOverviewDiv"
 						style="width:300px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
 					</div>
@@ -48,389 +46,524 @@
 						<h3>Properties:</h3>
 					</div>
 				</span> </div>
-		</div>
-		<button id="SaveButton" onclick="save()">Save</button>
-		<button onclick="load()">Load</button>
-		<label>Add nodes to Diagram (.xls)</label>
-		<input type="file" id="upload" name="files[]" accept=""></input>
-		<label>Load complete diagram from .txt file</label>
-		<input type="file" onchange="readFile(event)" accept="text/plain"></input>
-		<div class="footer" style="padding:2px">
-			<textarea id="mySavedModel" style="width:100%;height:300px">
+        </div>
+        <button id="SaveButton" onclick="save()">Save</button>
+        <button onclick="load()">Load</button>
+        <label>Add nodes to Diagram (.xls)</label>
+        <input type="file" id="upload" name="files[]" accept=""></input>
+        <label>Load complete diagram from .txt file</label>
+        <input type="file" onchange="readFile(event)" accept="text/plain"></input>
+        <div class="footer" style="padding:2px">
+            <textarea id="mySavedModel" style="width:100%;height:300px">
 	  </textarea>
-			<button id="SaveButton" onclick="toFile()">Download</button>
+            <button id="SaveButton" onclick="toFile()">Download</button>
 
-		</div>
-	</div>
-	<script type="text/javascript" src="javascripts/Figures.js"></script>
-	<script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
-	<script type="text/javascript" src="javascripts/DataInspector.js"></script>
-	<link rel="stylesheet" href="stylesheets/DataInspector.css" />
-	<script>
-		function mouseEnter(e, obj) {
-			var shape = obj.findObject("SHAPE");
-			shape.fill = "#1E90FF";
-			shape.stroke = "#00BFFF";
-			var text = obj.findObject("TEXT");
-			text.stroke = "white";
-		};
+        </div>
+    </div>
+    <script type="text/javascript" src="javascripts/Figures.js"></script>
+    <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
+    <script type="text/javascript" src="javascripts/DataInspector.js"></script>
+    <link rel="stylesheet" href="stylesheets/DataInspector.css" />
+    <script>
+        function mouseEnter(e, obj) {
+            var shape = obj.findObject("SHAPE");
+            shape.fill = "#1E90FF";
+            shape.stroke = "#00BFFF";
+            var text = obj.findObject("TEXT");
+            text.stroke = "white";
+        };
 
-		function mouseLeave(e, obj) {
-			var shape = obj.findObject("SHAPE");
-			// Return the Shape's fill and stroke to the defaults
-			shape.fill = obj.data.color;
-			shape.stroke = null;
-			// Return the TextBlock's stroke to its default
-			var text = obj.findObject("TEXT");
-			text.stroke = "black";
-		};
+        function mouseLeave(e, obj) {
+            var shape = obj.findObject("SHAPE");
+            // Return the Shape's fill and stroke to the defaults
+            shape.fill = obj.data.color;
+            shape.stroke = null;
+            // Return the TextBlock's stroke to its default
+            var text = obj.findObject("TEXT");
+            text.stroke = "black";
+        };
 
-		function showProperties(e, obj) {  // executed by ContextMenuButton
-			var node = obj.part.adornedPart;
-			var msg = "Properties:/n";
-			msg += "name: " + node.data.key + "/n ";
-			msg += "version: " + node.data.version + "/n";
-			msg += "description: " + node.data.descr
-			document.getElementById("name").value = node.data.text;
-			document.getElementById("version").value = node.data.version;
-			document.getElementById("descr").value = node.data.descr;
-
-
-		}
-		function deleteNode(e, obj) {
-			diagram.commandHandler.deleteSelection();
-		}
-
-		function makePort(name, spot, output, input) {
-			// the port is basically just a small transparent square
-			return $(go.Shape, "Circle",
-				{
-					fill: null,  // not seen, by default; set to a translucent gray by showSmallPorts, defined below
-					stroke: null,
-					desiredSize: new go.Size(7, 7),
-					alignment: spot,  // align the port on the main Shape
-					alignmentFocus: spot,  // just inside the Shape
-					portId: name,  // declare this object to be a "port"
-					fromSpot: spot, toSpot: spot,  // declare where links may connect at this port
-					fromLinkable: output, toLinkable: input,  // declare whether the user may draw links to/from here
-					cursor: "pointer"  // show a different cursor to indicate potential link point
-				});
-		}
-		function showSmallPorts(node, show) {
-			node.ports.each(function (port) {
-				if (port.portId !== "") {  // don't change the default port, which is the big shape
-					port.fill = show ? "rgba(0,0,0,.3)" : null;
-				}
-			});
-		}
+        function showProperties(e, obj) { // executed by ContextMenuButton
+            var node = obj.part.adornedPart;
+            var msg = "Properties:/n";
+            msg += "name: " + node.data.key + "/n ";
+            msg += "version: " + node.data.version + "/n";
+            msg += "description: " + node.data.descr
+            document.getElementById("name").value = node.data.text;
+            document.getElementById("version").value = node.data.version;
+            document.getElementById("descr").value = node.data.descr;
 
 
+        }
 
-		var $ = go.GraphObject.make;
+        function deleteNode(e, obj) {
+            diagram.commandHandler.deleteSelection();
+        }
 
-		diagram =
-			$(go.Diagram, "myDiagramDiv",  // must name or refer to the DIV HTML element
-				{
-					// supply a simple narrow grid that manually reshaped link routes will follow
-					grid: $(go.Panel, "Grid",
-						{ gridCellSize: new go.Size(8, 8) },
-						$(go.Shape, "LineH", { stroke: "lightgray", strokeWidth: 0.5 }),
-						$(go.Shape, "LineV", { stroke: "lightgray", strokeWidth: 0.5 })
-					),
-					"draggingTool.isGridSnapEnabled": true,
-					linkReshapingTool: $(SnapLinkReshapingTool),
-					// when the user reshapes a Link, change its Link.routing from AvoidsNodes to Orthogonal,
-					// so that combined with Link.adjusting == End the link will retain its reshaped mid points
-					// even after nodes are moved
-					"LinkReshaped": function (e) { e.subject.routing = go.Link.Orthogonal; },
-					"animationManager.isEnabled": false,
-					"undoManager.isEnabled": true
-				});
-		diagram.addDiagramListener("Modified", function (e) {
-			var button = document.getElementById("SaveButton");
-			if (button) button.disabled = !diagram.isModified;
-			var idx = document.title.indexOf("*");
-			if (diagram.isModified) {
-				if (idx < 0) document.title += "*";
-			} else {
-				if (idx >= 0) document.title = document.title.substr(0, idx);
-			}
-		});
+        function makePort(name, spot, output, input) {
+            // the port is basically just a small transparent square
+            return $(go.Shape, "Circle", {
+                fill: null, // not seen, by default; set to a translucent gray by showSmallPorts, defined below
+                stroke: null,
+                desiredSize: new go.Size(7, 7),
+                alignment: spot, // align the port on the main Shape
+                alignmentFocus: spot, // just inside the Shape
+                portId: name, // declare this object to be a "port"
+                fromSpot: spot,
+                toSpot: spot, // declare where links may connect at this port
+                fromLinkable: output,
+                toLinkable: input, // declare whether the user may draw links to/from here
+                cursor: "pointer" // show a different cursor to indicate potential link point
+            });
+        }
+
+        function showSmallPorts(node, show) {
+            node.ports.each(function(port) {
+                if (port.portId !== "") { // don't change the default port, which is the big shape
+                    port.fill = show ? "rgba(0,0,0,.3)" : null;
+                }
+            });
+        }
 
 
 
+        var $ = go.GraphObject.make;
 
-
-
-
-		//the node template describes how each Node should be constructed
-		diagram.nodeTemplate =
-			$(go.Node, "Spot",
-				{ locationSpot: go.Spot.Center },
-				new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-				{ selectable: true },
-				{ resizable: true, resizeObjectName: "PANEL" },
-				// the main object is a Panel that surrounds a TextBlock with a Shape
-				$(go.Panel, "Auto",
-					{ name: "PANEL" },
-					new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
-					$(go.Shape, new go.Binding("figure"),  // default figure
-						{
-							portId: "", // the default port: if no spot on link data, use closest side
-							fromLinkable: true, toLinkable: true, cursor: "pointer",
-							fill: "white"  // default color
-						},
-						new go.Binding("figure"),
-						new go.Binding("fill")),
-					$(go.TextBlock,
-						{
-							font: "bold 11pt Helvetica, Arial, sans-serif",
-							margin: 8,
-							maxSize: new go.Size(160, NaN),
-							wrap: go.TextBlock.WrapFit,
-							editable: true
-						},
-						new go.Binding("text", "name").makeTwoWay()),
-					{
-						contextMenu:            //define a context menu foe each node
-							$("ContextMenu",
-								$("ContextMenuButton",
-									$(go.TextBlock, "delete"),
-									{ click: deleteNode }
-								)
-							)
-					}
-				),
-				// four small named ports, one on each side:
-				makePort("T", go.Spot.Top, true, true),
-				makePort("L", go.Spot.Left, true, true),
-				makePort("R", go.Spot.Right, true, true),
-				makePort("B", go.Spot.Bottom, true, true),
-				{ // handle mouse enter/leave events to show/hide the ports
-					mouseEnter: function (e, node) { showSmallPorts(node, true); },
-					mouseLeave: function (e, node) { showSmallPorts(node, false); }
-				}
-			);
-		var myOverview =
-			$(go.Overview, "myOverviewDiv",
-				{ observed: diagram });
+        diagram =
+            $(go.Diagram, "myDiagramDiv", // must name or refer to the DIV HTML element
+                {
+                    // supply a simple narrow grid that manually reshaped link routes will follow
+                    grid: $(go.Panel, "Grid", {
+                            gridCellSize: new go.Size(8, 8)
+                        },
+                        $(go.Shape, "LineH", {
+                            stroke: "lightgray",
+                            strokeWidth: 0.5
+                        }),
+                        $(go.Shape, "LineV", {
+                            stroke: "lightgray",
+                            strokeWidth: 0.5
+                        })
+                    ),
+                    "draggingTool.isGridSnapEnabled": true,
+                    linkReshapingTool: $(SnapLinkReshapingTool),
+                    // when the user reshapes a Link, change its Link.routing from AvoidsNodes to Orthogonal,
+                    // so that combined with Link.adjusting == End the link will retain its reshaped mid points
+                    // even after nodes are moved
+                    "LinkReshaped": function(e) {
+                        e.subject.routing = go.Link.Orthogonal;
+                    },
+                    "animationManager.isEnabled": false,
+                    "undoManager.isEnabled": true
+                });
+        diagram.addDiagramListener("Modified", function(e) {
+            var button = document.getElementById("SaveButton");
+            if (button) button.disabled = !diagram.isModified;
+            var idx = document.title.indexOf("*");
+            if (diagram.isModified) {
+                if (idx < 0) document.title += "*";
+            } else {
+                if (idx >= 0) document.title = document.title.substr(0, idx);
+            }
+        });
 
 
 
 
-		diagram.linkTemplate =
-			$(go.Link,  // the whole link panel
-				{ relinkableFrom: true, relinkableTo: true, reshapable: true, resegmentable: true },
-				{
-					routing: go.Link.AvoidsNodes,  // but this is changed to go.Link.Orthgonal when the Link is reshaped
-					adjusting: go.Link.End,
-					curve: go.Link.JumpOver,
-					corner: 5,
-					toShortLength: 4
-				},
-				new go.Binding("points").makeTwoWay(),
-				// remember the Link.routing too
-				new go.Binding("routing", "routing", go.Binding.parseEnum(go.Link, go.Link.AvoidsNodes))
-					.makeTwoWay(go.Binding.toString),
-				$(go.Shape,  // the link path shape
-					{ isPanelMain: true, strokeWidth: 2 }),
-				$(go.Shape,  // the arrowhead
-					{ toArrow: "Standard", stroke: null }),
-				$(go.Panel, "Auto",
-					{ cursor: "move" },  // visual hint that the user can do something with this link label
-					$(go.Shape,  // the label background, which becomes transparent around the edges
-						{
-							fill: $(go.Brush, "Radial",
-								{ 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
-							stroke: null
-						}),
-					$(go.TextBlock,                        // this is a Link label
-						new go.Binding("text"), { editable: true }, { segmentOffset: new go.Point(0, 10) })
-
-				));
-
-		var link = diagram.links.first();
-		if (link) link.isSelected = true;
-
-		myPalette =
-			$(go.Palette, "myPaletteDiv",  // must name or refer to the DIV HTML element
-				{
-					maxSelectionCount: 1,
-					nodeTemplateMap: diagram.nodeTemplateMap,  // share the templates used by myDiagram
-					model: new go.GraphLinksModel([  // specify the contents of the Palette
-						{ text: "Application", figure: "MultiProcess", fill: "blue" },
-						{ text: "Step" },
-						{ text: "DB", figure: "Database", fill: "lightgray" },
-						{ text: "???", figure: "Diamond", fill: "lightskyblue" },
-						{ text: "End", figure: "Circle", fill: "red" },
-						{ text: "Comment", figure: "RoundedRectangle", fill: "lightyellow" }
-					])
-				});
 
 
 
-		diagram.contextMenu =
-			$("ContextMenu",
-				$("ContextMenuButton",
-					$(go.TextBlock, "Undo"),
-					{ click: function (e, obj) { e.diagram.commandHandler.undo(); } },
-					new go.Binding("visible", "", function (o) {
-						return o.diagram.commandHandler.canUndo();
-					}).ofObject()),
-				$("ContextMenuButton",
-					$(go.TextBlock, "Redo"),
-					{ click: function (e, obj) { e.diagram.commandHandler.redo(); } },
-					new go.Binding("visible", "", function (o) {
-						return o.diagram.commandHandler.canRedo();
-					}).ofObject()),
-				$("ContextMenuButton",
-					$(go.TextBlock, "New Node"),
-					{
-						click: function (e, obj) {
-							e.diagram.commit(function (d) {
-								var data = {};
-								d.model.addNodeData(data);
-								part = d.findPartForData(data);  // must be same data reference, not a new {}
-								// set location to saved mouseDownPoint in ContextMenuTool
-								part.location = d.toolManager.contextMenuTool.mouseDownPoint;
-							}, 'new node');
-						}
-					})
-			);
-
-		// Show the diagram's model in JSON format that the user may edit
-		function save() {
-			saveDiagramProperties();  // do this first, before writing to JSON
-			document.getElementById("mySavedModel").value = diagram.model.toJson();
-			diagram.isModified = false;
-		}
-		function download(content, fileName, contentType) {
-			var a = document.createElement("a");
-			var file = new Blob([content], { type: contentType });
-			a.href = URL.createObjectURL(file);
-			a.download = fileName;
-			a.click();
-		}
-		function toFile(event) {
-			jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
-			download(jsonData, 'myDiagram.txt', 'text/plain');
-		}
-		var ExcelToJSON = function () {
-			this.parseExcel = function (file) {
-				var reader = new FileReader();
-				
-				reader.onload = function (e) {
-					var data = e.target.result;
-					var workbook = XLSX.read(data, {
-						type: 'binary'
-					});
-					workbook.SheetNames.forEach(function (sheetName) {
-						// Here is your object
-						var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-						var json_object = JSON.stringify(XL_row_object);
-						jQuery('#xlx_json').val(json_object);
-						var json1 = JSON.parse(json_object);
-
-						diagram.startTransaction("make new node");
-						for (i in json1) {
-							if (json1[i].name != null) {
-								console.log(json1[i]);
-								diagram.model.addNodeData(json1[i]);
-							}
-						}
-						diagram.commitTransaction("make new node");
-					})
-				};
-				reader.onerror = function (ex) {
-					console.log(ex);
-				};
-				reader.readAsBinaryString(file);
-			};
-		};
-
-		function handleFileSelect(evt) {
-
-			var files = evt.target.files; // FileList object
-			var xl2json = new ExcelToJSON();
-			xl2json.parseExcel(files[0]);
-		};
-		document.getElementById('upload').addEventListener('change', handleFileSelect, false);
-
-		function readFile() {
-			var input = event.target;
-			var reader = new FileReader();
-			reader.onload = function () {
-				var text = reader.result;
-				var json = JSON.parse(text)
-				diagram.model = go.Model.fromJson(json);
-			}
-			reader.readAsText(input.files[0]);
-		}
-		function load() {
-			diagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
-			loadDiagramProperties();
-		}
-
-		function saveDiagramProperties() {
-			diagram.model.modelData.position = go.Point.stringify(diagram.position);
-		}
-		function loadDiagramProperties(e) {
-			// set Diagram.initialPosition, not Diagram.position, to handle initialization side-effects
-			var pos = diagram.model.modelData.position;
-			if (pos) diagram.initialPosition = go.Point.parse(pos);
-		}
+        //the node template describes how each Node should be constructed
+        diagram.nodeTemplate =
+            $(go.Node, "Spot", {
+                    locationSpot: go.Spot.Center
+                },
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify), {
+                    selectable: true
+                }, {
+                    resizable: true,
+                    resizeObjectName: "PANEL"
+                },
+                // the main object is a Panel that surrounds a TextBlock with a Shape
+                $(go.Panel, "Auto", {
+                        name: "PANEL"
+                    },
+                    new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+                    $(go.Shape, new go.Binding("figure"), // default figure
+                        {
+                            portId: "", // the default port: if no spot on link data, use closest side
+                            fromLinkable: true,
+                            toLinkable: true,
+                            cursor: "pointer",
+                            fill: "white" // default color
+                        },
+                        new go.Binding("figure"),
+                        new go.Binding("fill")),
+                    $(go.TextBlock, {
+                            font: "bold 11pt Helvetica, Arial, sans-serif",
+                            margin: 8,
+                            maxSize: new go.Size(160, NaN),
+                            wrap: go.TextBlock.WrapFit,
+                            editable: true
+                        },
+                        new go.Binding("text", "name").makeTwoWay()), {
+                        contextMenu: //define a context menu foe each node
+                            $("ContextMenu",
+                            $("ContextMenuButton",
+                                $(go.TextBlock, "delete"), {
+                                    click: deleteNode
+                                }
+                            )
+                        )
+                    }
+                ),
+                // four small named ports, one on each side:
+                makePort("T", go.Spot.Top, true, true),
+                makePort("L", go.Spot.Left, true, true),
+                makePort("R", go.Spot.Right, true, true),
+                makePort("B", go.Spot.Bottom, true, true), { // handle mouse enter/leave events to show/hide the ports
+                    mouseEnter: function(e, node) {
+                        showSmallPorts(node, true);
+                    },
+                    mouseLeave: function(e, node) {
+                        showSmallPorts(node, false);
+                    }
+                }
+            );
+        var myOverview =
+            $(go.Overview, "myOverviewDiv", {
+                observed: diagram
+            });
 
 
-		var nodeDataArray = [
-			{
-				key: "node1", name: "DBMS", version: "1.0.0.2", Description: "Database Management System", start: "2010-08-19", shutdown: "2015-03-11",
-				fill: "lightgray", figure: "Database", loc: "100,50"
-			},
-			{
-				key: "node2", name: "ERP", version: "6.3.2", Description: "Enterprise Resource Planning", start: "2011-10-30", shutdown: "2017-05-28",
-				fill: "lightblue", figure: "Procedure", loc: "0,0",
-			},
-			{
-				key: "node3", name: "Supply Chain Management", version: "2.0.2", Description: "...", start: "2011-12-01",
-				shutdown: "2018-02-14",
-				fill: "lightblue", loc: "100, 100"
-			}
-		];
 
-		var linkDataArray = [
-			{ from: "node1", to: "node2", text: "a Label" },
-			{ from: "node2", to: "node3", text: "Daten" }
-		];
-		diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
-		diagram.undoManager.isEnabled = true;
-		//select a Node, so that the first Inspector shows something
-		//diagram.select(diagram.nodes.first);
 
-		var inspector = new Inspector("myInspectorDiv", diagram,
-			{
-				showIfNode: false,
-				// allows for multiple nodes to be inspected at once
-				multipleSelection: false,
-				// max number of node properties will be shown when multiple selection is true
-				showSize: 4,
-				// when multipleSelection is true, when showAllProperties is true it takes the union of properties
-				// otherwise it takes the intersection of properties
-				showAllProperties: false,
-				includesOwnProperties: false,
-				// uncomment this line to only inspect the named properties below instead of all properties on each object:
-				// includesOwnProperties: false,
-				properties: {
-					"name": {},
-					"version": { show: Inspector.showIfNode },
-					"Description:": {},
-					"start": { show: Inspector.showIfNode },
-					"shutdown": { show: Inspector.showIfNode },
-					"personalData?:": { show: Inspector.showIfLink, type: "checkbox" },
-				}
-			});
-		window.addEventListener('DOMContentLoaded', init);
+        diagram.linkTemplate =
+            $(go.Link, // the whole link panel
+                {
+                    relinkableFrom: true,
+                    relinkableTo: true,
+                    reshapable: true,
+                    resegmentable: true
+                }, {
+                    routing: go.Link.AvoidsNodes, // but this is changed to go.Link.Orthgonal when the Link is reshaped
+                    adjusting: go.Link.End,
+                    curve: go.Link.JumpOver,
+                    corner: 5,
+                    toShortLength: 4
+                },
+                new go.Binding("points").makeTwoWay(),
+                // remember the Link.routing too
+                new go.Binding("routing", "routing", go.Binding.parseEnum(go.Link, go.Link.AvoidsNodes))
+                .makeTwoWay(go.Binding.toString),
+                $(go.Shape, // the link path shape
+                    {
+                        isPanelMain: true,
+                        strokeWidth: 2
+                    }),
+                $(go.Shape, // the arrowhead
+                    {
+                        toArrow: "Standard",
+                        stroke: null
+                    }),
+                $(go.Panel, "Auto", {
+                        cursor: "move"
+                    }, // visual hint that the user can do something with this link label
+                    $(go.Shape, // the label background, which becomes transparent around the edges
+                        {
+                            fill: $(go.Brush, "Radial", {
+                                0: "rgb(240, 240, 240)",
+                                0.3: "rgb(240, 240, 240)",
+                                1: "rgba(240, 240, 240, 0)"
+                            }),
+                            stroke: null
+                        }),
+                    $(go.TextBlock, // this is a Link label
+                        new go.Binding("text"), {
+                            editable: true
+                        }, {
+                            segmentOffset: new go.Point(0, 10)
+                        })
 
-	</script>
+                ));
+
+        var link = diagram.links.first();
+        if (link) link.isSelected = true;
+
+        myPalette =
+            $(go.Palette, "myPaletteDiv", // must name or refer to the DIV HTML element
+                {
+                    maxSelectionCount: 1,
+                    nodeTemplateMap: diagram.nodeTemplateMap, // share the templates used by myDiagram
+                    model: new go.GraphLinksModel([ // specify the contents of the Palette
+                        {
+                            text: "Application",
+                            figure: "MultiProcess",
+                            fill: "blue"
+                        }, {
+                            text: "Step"
+                        }, {
+                            text: "DB",
+                            figure: "Database",
+                            fill: "lightgray"
+                        }, {
+                            text: "???",
+                            figure: "Diamond",
+                            fill: "lightskyblue"
+                        }, {
+                            text: "End",
+                            figure: "Circle",
+                            fill: "red"
+                        }, {
+                            text: "Comment",
+                            figure: "RoundedRectangle",
+                            fill: "lightyellow"
+                        }
+                    ])
+                });
+
+
+
+        diagram.contextMenu =
+            $("ContextMenu",
+                $("ContextMenuButton",
+                    $(go.TextBlock, "Undo"), {
+                        click: function(e, obj) {
+                            e.diagram.commandHandler.undo();
+                        }
+                    },
+                    new go.Binding("visible", "", function(o) {
+                        return o.diagram.commandHandler.canUndo();
+                    }).ofObject()),
+                $("ContextMenuButton",
+                    $(go.TextBlock, "Redo"), {
+                        click: function(e, obj) {
+                            e.diagram.commandHandler.redo();
+                        }
+                    },
+                    new go.Binding("visible", "", function(o) {
+                        return o.diagram.commandHandler.canRedo();
+                    }).ofObject()),
+                $("ContextMenuButton",
+                    $(go.TextBlock, "New Node"), {
+                        click: function(e, obj) {
+                            e.diagram.commit(function(d) {
+                                var data = {};
+                                d.model.addNodeData(data);
+                                part = d.findPartForData(data); // must be same data reference, not a new {}
+                                // set location to saved mouseDownPoint in ContextMenuTool
+                                part.location = d.toolManager.contextMenuTool.mouseDownPoint;
+                            }, 'new node');
+                        }
+                    })
+            );
+
+        // Show the diagram's model in JSON format that the user may edit
+        function save() {
+            const jsonDia = JSON.parse(diagram.model.toJson());
+            check = true;
+            for (var x in jsonDia.nodeDataArray) {
+                if (jsonDia.nodeDataArray[x].start > jsonDia.nodeDataArray[x].shutdown) {
+                    window.alert("shutDownDate can't be befor releaseDate , Change shutDownDate of " + jsonDia.nodeDataArray[x].name);
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
+                checkDate();
+            }
+
+
+        }
+
+        function checkDate() {
+
+            const jsonDia = JSON.parse(diagram.model.toJson());
+            var today = new Date().toJSON().slice(0, 10).replace(/-/g, '-'); //Json Date of today
+
+            for (var x in jsonDia.nodeDataArray) {
+                if (jsonDia.nodeDataArray[x].shutdown < today) {
+
+                    jsonDia.nodeDataArray[x].fill = "red";
+                    saveDiagramProperties();
+
+                } else {
+                    jsonDia.nodeDataArray[x].fill = "green";
+                    saveDiagramProperties();
+                }
+            }
+
+            diagram.model = go.Model.fromJson(jsonDia);
+            document.getElementById("mySavedModel").value = diagram.model.toJson();
+            diagram.isModified = false;
+        }
+
+
+
+
+
+        function download(content, fileName, contentType) {
+            var a = document.createElement("a");
+            var file = new Blob([content], {
+                type: contentType
+            });
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        function toFile(event) {
+            jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
+            download(jsonData, 'myDiagram.txt', 'text/plain');
+        }
+        var ExcelToJSON = function() {
+            this.parseExcel = function(file) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+                    workbook.SheetNames.forEach(function(sheetName) {
+                        // Here is your object
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                        var json_object = JSON.stringify(XL_row_object);
+                        jQuery('#xlx_json').val(json_object);
+                        var json1 = JSON.parse(json_object);
+
+                        diagram.startTransaction("make new node");
+                        for (i in json1) {
+                            if (json1[i].name != null) {
+                                console.log(json1[i]);
+                                diagram.model.addNodeData(json1[i]);
+                            }
+                        }
+                        diagram.commitTransaction("make new node");
+                    })
+                };
+                reader.onerror = function(ex) {
+                    console.log(ex);
+                };
+                reader.readAsBinaryString(file);
+            };
+        };
+
+        function handleFileSelect(evt) {
+
+            var files = evt.target.files; // FileList object
+            var xl2json = new ExcelToJSON();
+            xl2json.parseExcel(files[0]);
+        };
+        document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+
+        function readFile() {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function() {
+                var text = reader.result;
+                var json = JSON.parse(text)
+                diagram.model = go.Model.fromJson(json);
+            }
+            reader.readAsText(input.files[0]);
+        }
+
+        function load() {
+            diagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+            loadDiagramProperties();
+        }
+
+        function saveDiagramProperties() {
+            diagram.model.modelData.position = go.Point.stringify(diagram.position);
+        }
+
+        function loadDiagramProperties(e) {
+            // set Diagram.initialPosition, not Diagram.position, to handle initialization side-effects
+            var pos = diagram.model.modelData.position;
+            if (pos) diagram.initialPosition = go.Point.parse(pos);
+        }
+
+
+        var nodeDataArray = [{
+            key: "node1",
+            name: "DBMS",
+            version: "1.0.0.2",
+            Description: "Database Management System",
+            start: "2010-08-19",
+            shutdown: "2015-03-11",
+            fill: "lightgray",
+            figure: "Database",
+            loc: "100,50"
+        }, {
+            key: "node2",
+            name: "ERP",
+            version: "6.3.2",
+            Description: "Enterprise Resource Planning",
+            start: "2011-10-30",
+            shutdown: "2017-05-28",
+            fill: "lightblue",
+            figure: "Procedure",
+            loc: "0,0",
+        }, {
+            key: "node3",
+            name: "Supply Chain Management",
+            version: "2.0.2",
+            Description: "...",
+            start: "2011-12-01",
+            shutdown: "2018-02-14",
+            fill: "lightblue",
+            loc: "100, 100"
+        }];
+
+        var linkDataArray = [{
+            from: "node1",
+            to: "node2",
+            text: "a Label"
+        }, {
+            from: "node2",
+            to: "node3",
+            text: "Daten"
+        }];
+        diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
+        diagram.undoManager.isEnabled = true;
+        //select a Node, so that the first Inspector shows something
+        //diagram.select(diagram.nodes.first);
+
+        var inspector = new Inspector("myInspectorDiv", diagram, {
+            showIfNode: false,
+            // allows for multiple nodes to be inspected at once
+            multipleSelection: false,
+            // max number of node properties will be shown when multiple selection is true
+            showSize: 4,
+            // when multipleSelection is true, when showAllProperties is true it takes the union of properties
+            // otherwise it takes the intersection of properties
+            showAllProperties: false,
+            includesOwnProperties: false,
+            // uncomment this line to only inspect the named properties below instead of all properties on each object:
+            // includesOwnProperties: false,
+            properties: {
+                "name": {},
+                "version": {
+                    show: Inspector.showIfNode,
+                    type: 'number'
+                },
+                "Description:": {},
+                "start": {
+                    show: Inspector.showIfNode,
+                    type: 'date'
+                },
+                "shutdown": {
+                    show: Inspector.showIfNode,
+                    type: 'date'
+                },
+                "personalData?:": {
+                    show: Inspector.showIfLink,
+                    type: "checkbox"
+                },
+            }
+        });
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 
 </html>
