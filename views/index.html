@@ -235,9 +235,6 @@
                 observed: diagram
             });
 
-
-
-
         diagram.linkTemplate =
             $(go.Link, // the whole link panel
                 {
@@ -298,31 +295,11 @@
                     model: new go.GraphLinksModel([ // specify the contents of the Palette
                         {
                             text: "Application",
-                            figure: "MultiProcess",
-                            fill: "blue"
-                        }, {
-                            text: "Step"
-                        }, {
-                            text: "DB",
-                            figure: "Database",
-                            fill: "lightgray"
-                        }, {
-                            text: "???",
-                            figure: "Diamond",
-                            fill: "lightskyblue"
-                        }, {
-                            text: "End",
-                            figure: "Circle",
-                            fill: "red"
-                        }, {
-                            text: "Comment",
-                            figure: "RoundedRectangle",
-                            fill: "lightyellow"
+                            figure: "Procedure",
+                            fill: "green"
                         }
                     ])
                 });
-
-
 
         diagram.contextMenu =
             $("ContextMenu",
@@ -491,8 +468,8 @@
             Description: "Database Management System",
             start: "2010-08-19",
             shutdown: "2015-03-11",
-            fill: "lightgray",
-            figure: "Database",
+            fill: "green",
+            figure: "Procedure",
             loc: "100,50"
         }, {
             key: "node2",
@@ -501,7 +478,7 @@
             Description: "Enterprise Resource Planning",
             start: "2011-10-30",
             shutdown: "2017-05-28",
-            fill: "lightblue",
+            fill: "green",
             figure: "Procedure",
             loc: "0,0",
         }, {
@@ -511,7 +488,8 @@
             Description: "...",
             start: "2011-12-01",
             shutdown: "2018-02-14",
-            fill: "lightblue",
+            figure: "Procedure",
+            fill: "green",
             loc: "100, 100"
         }];
 
