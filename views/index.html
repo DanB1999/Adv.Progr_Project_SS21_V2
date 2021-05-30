@@ -189,7 +189,7 @@
                         name: "PANEL"
                     },
                     new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
-                    $(go.Shape, new go.Binding("figure"), // default figure
+                    $(go.Shape, "Procedure", new go.Binding("figure"), // default figure
                         {
                             portId: "", // the default port: if no spot on link data, use closest side
                             fromLinkable: true,
