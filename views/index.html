@@ -41,15 +41,15 @@
             </div>
             <div class="column middle" id="myDiagramDiv"
                 style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
-            <div class="column right"> <span style="display: inline-block; vertical-align: top;padding-left:2px">
+            <div class="column right"> <span style="display: inline-block; vertical-align: top; margin-left:2px">
                     <div id="myOverviewDiv"
-                        style="width:300px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
+                        style="width:310px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
                     </div>
-                    <div id="inspectorBlock" class="inspector" style="padding-top:2px">
+                    <div id="inspectorBlock" class="inspector" style="width:310px;margin-top:2px;padding-left:2px;align-items:center">
                         <div id="select"></div>
                         <h3>Properties:</h3>
-                        <div id="myInspectorDiv"></div>
-                        <div id="descrField"></div>
+                        <div id="myInspectorDiv" style="width:95%"></div>
+                        <div id="descrField" style="margin-bottom:6px;"></div>
                     </div>
 
 
@@ -226,11 +226,13 @@
                     if (obj instanceof go.Node) {
                         e.diagram.selection.each(function (n) {
                             document.getElementById("descrField").innerHTML =
-                                '<label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
+                                '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
                                 + 'style="width: 95%;padding-left:4px;resize:none"'
                                 + 'placeholder="describe the application..."></textarea>';
-                            document.getElementById("descrDiv").value = n.data.Description;
-
+                            if (n.data.Description)
+                                document.getElementById("descrDiv").value = n.data.Description;
+                            else
+                                document.getElementById("descrDiv").value = "";
                         })
                     }
                 }
@@ -301,7 +303,7 @@
                             }
                             document.getElementById("select").innerHTML = text;
                             document.getElementById("descrField").innerHTML =
-                                '<label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
+                                '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
                                 + 'style="width: 95%;padding-left:4px;resize:none"'
                                 + 'placeholder="describe the data object..."></textarea>';
                             document.getElementById("descrDiv").value = l.data.Description;
