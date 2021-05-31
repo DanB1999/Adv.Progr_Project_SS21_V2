@@ -51,8 +51,8 @@
         <button onclick="load()">Load</button>
         <label>Add nodes to Diagram (.xls)</label>
         <input type="file" id="upload" name="files[]" accept=""></input>
-        <label>Load complete diagram from .txt file</label>
-        <input type="file" onchange="readFile(event)" accept="text/plain"></input>
+        <label>Load complete diagram from .json file</label>
+        <input type="file" onchange="readFile(event)" accept=".json"></input>
         <div class="footer" style="padding:2px">
             <textarea id="mySavedModel" style="width:100%;height:300px">
 	  </textarea>
@@ -391,7 +391,7 @@
 
         function toFile(event) {
             jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
-            download(jsonData, 'myDiagram.txt', 'text/plain');
+            download(jsonData, 'myDiagram.json', 'application/json');
         }
         var ExcelToJSON = function() {
             this.parseExcel = function(file) {
