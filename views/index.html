@@ -46,13 +46,10 @@
                         style="width:300px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
                     </div>
                     <div id="inspectorBlock" class="inspector" style="padding-top:2px">
-                        <div id="select">
-                        </div>
+                        <div id="select"></div>
                         <h3>Properties:</h3>
                         <div id="myInspectorDiv"></div>
-                        <label>Description:</label>
-                        <textarea id="descrDiv" onchange="saveDescr()" rows="10"
-                            style="width: 95%;padding-left:4px;resize:none"></textarea>
+                        <div id="descrField"></div>
                     </div>
 
 
@@ -160,10 +157,14 @@
         });
 
         diagram.addDiagramListener("BackgroundSingleClicked", function (e) {
-            document.getElementById("descrDiv").value = "";
+            document.getElementById("descrField").innerHTML = null;
             document.getElementById("select").innerHTML = null;
-
-
+            document.getElementById("myInspectorDiv").innerHTML = null;
+        });
+        diagram.addDiagramListener("ChangedSelection", function (e) {
+            document.getElementById("descrField").innerHTML = null;
+            document.getElementById("select").innerHTML = null;
+            document.getElementById("myInspectorDiv").innerHTML = null;
         });
 
         //the node template describes how each Node should be constructed
@@ -224,7 +225,12 @@
                 click: function (e, obj) {
                     if (obj instanceof go.Node) {
                         e.diagram.selection.each(function (n) {
+                            document.getElementById("descrField").innerHTML =
+                                '<label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
+                                + 'style="width: 95%;padding-left:4px;resize:none"'
+                                + 'placeholder="describe the application..."></textarea>';
                             document.getElementById("descrDiv").value = n.data.Description;
+
                         })
                     }
                 }
@@ -286,7 +292,6 @@
                     var dataObjects = ['DataObj1', 'DataObj2', 'DataObj3'];
                     if (obj instanceof go.Link) {
                         e.diagram.selection.each(function (l) {
-                            document.getElementById("descrDiv").value = l.data.Description;
                             text += '<label>Choose from existing DataObjects</label>'
                                 + '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">'
                                 + '<option value="">Select</option>';
@@ -295,6 +300,11 @@
                                 text += '<option value=' + dataObjects[i] + '>' + dataObjects[i] + '</option>'
                             }
                             document.getElementById("select").innerHTML = text;
+                            document.getElementById("descrField").innerHTML =
+                                '<label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
+                                + 'style="width: 95%;padding-left:4px;resize:none"'
+                                + 'placeholder="describe the data object..."></textarea>';
+                            document.getElementById("descrDiv").value = l.data.Description;
 
                         })
                     }
@@ -502,7 +512,7 @@
             key: "node3",
             name: "Supply Chain Management",
             version: "2.0.2",
-            Description: "...",
+            Description: "",
             start: "2011-12-01",
             shutdown: "2022-02-14",
             figure: "Procedure",
@@ -513,11 +523,13 @@
         var linkDataArray = [{
             from: "node1",
             to: "node2",
-            text: "a Label"
+            text: "a Label",
+            Description: "Datenkontrollfluss"
         }, {
             from: "node2",
             to: "node3",
-            text: "Daten"
+            text: "Daten",
+            Description: ""
         }];
         diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
         diagram.undoManager.isEnabled = true;
