@@ -46,13 +46,10 @@
                         style="width:300px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
                     </div>
                     <div id="inspectorBlock" class="inspector" style="padding-top:2px">
-                        <h3>Properties:</h3>
-                        <div id="myInspectorDiv">
-
+                        <div id="select">
                         </div>
-
-
-
+                        <h3>Properties:</h3>
+                        <div id="myInspectorDiv"></div>
                         <label>Description:</label>
                         <textarea id="descrDiv" onchange="saveDescr()" rows="10"
                             style="width: 95%;padding-left:4px;resize:none"></textarea>
@@ -114,6 +111,12 @@
                 n.data.Description = document.getElementById("descrDiv").value;
             })
         }
+        function selectDataObj(value) {
+            console.log(value);
+            diagram.selection.each(function (n) {
+                n.data.name = value;
+            })
+        }
 
         var $ = go.GraphObject.make;
 
@@ -158,6 +161,9 @@
 
         diagram.addDiagramListener("BackgroundSingleClicked", function (e) {
             document.getElementById("descrDiv").value = "";
+            document.getElementById("select").innerHTML = null;
+
+
         });
 
         //the node template describes how each Node should be constructed
@@ -276,9 +282,20 @@
 
                 ), {
                 click: function (e, obj) {
+                    var text = "";
+                    var dataObjects = ['DataObj1', 'DataObj2', 'DataObj3'];
                     if (obj instanceof go.Link) {
                         e.diagram.selection.each(function (l) {
                             document.getElementById("descrDiv").value = l.data.Description;
+                            text += '<label>Choose from existing DataObjects</label>'
+                                + '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">'
+                                + '<option value="">Select</option>';
+
+                            for (i in dataObjects) {
+                                text += '<option value=' + dataObjects[i] + '>' + dataObjects[i] + '</option>'
+                            }
+                            document.getElementById("select").innerHTML = text;
+
                         })
                     }
                 }
