@@ -45,7 +45,8 @@
                     <div id="myOverviewDiv"
                         style="width:310px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
                     </div>
-                    <div id="inspectorBlock" class="inspector" style="width:310px;margin-top:2px;padding-left:2px;align-items:center">
+                    <div id="inspectorBlock" class="inspector"
+                        style="width:310px;margin-top:2px;padding-left:2px;align-items:center">
                         <div id="select"></div>
                         <h3>Properties:</h3>
                         <div id="myInspectorDiv" style="width:95%"></div>
@@ -75,45 +76,6 @@
     <script type="text/javascript" src="javascripts/DataInspector.js"></script>
     <link rel="stylesheet" href="stylesheets/DataInspector.css" />
     <script>
-        function deleteNode(e, obj) {
-            diagram.commandHandler.deleteSelection();
-        }
-
-        function makePort(name, spot, output, input) {
-            // the port is basically just a small transparent square
-            return $(go.Shape, "Circle", {
-                fill: null, // not seen, by default; set to a translucent gray by showSmallPorts, defined below
-                stroke: null,
-                desiredSize: new go.Size(7, 7),
-                alignment: spot, // align the port on the main Shape
-                alignmentFocus: spot, // just inside the Shape
-                portId: name, // declare this object to be a "port"
-                fromSpot: spot,
-                toSpot: spot, // declare where links may connect at this port
-                fromLinkable: output,
-                toLinkable: input, // declare whether the user may draw links to/from here
-                cursor: "pointer" // show a different cursor to indicate potential link point
-            });
-        }
-
-        function showSmallPorts(node, show) {
-            node.ports.each(function (port) {
-                if (port.portId !== "") { // don't change the default port, which is the big shape
-                    port.fill = show ? "rgba(0,0,0,.3)" : null;
-                }
-            });
-        }
-        function saveDescr() {
-            diagram.selection.each(function (n) {
-                n.data.Description = document.getElementById("descrDiv").value;
-            })
-        }
-        function selectDataObj(value) {
-            console.log(value);
-            diagram.selection.each(function (n) {
-                n.data.name = value;
-            })
-        }
 
         var $ = go.GraphObject.make;
 
@@ -166,6 +128,7 @@
             document.getElementById("select").innerHTML = null;
             document.getElementById("myInspectorDiv").innerHTML = null;
         });
+
 
         //the node template describes how each Node should be constructed
         diagram.nodeTemplate =
@@ -364,6 +327,47 @@
                 })
             );
 
+            function deleteNode(e, obj) {
+            diagram.commandHandler.deleteSelection();
+        }
+
+        //functions:
+        function makePort(name, spot, output, input) {
+            // the port is basically just a small transparent square
+            return $(go.Shape, "Circle", {
+                fill: null, // not seen, by default; set to a translucent gray by showSmallPorts, defined below
+                stroke: null,
+                desiredSize: new go.Size(7, 7),
+                alignment: spot, // align the port on the main Shape
+                alignmentFocus: spot, // just inside the Shape
+                portId: name, // declare this object to be a "port"
+                fromSpot: spot,
+                toSpot: spot, // declare where links may connect at this port
+                fromLinkable: output,
+                toLinkable: input, // declare whether the user may draw links to/from here
+                cursor: "pointer" // show a different cursor to indicate potential link point
+            });
+        }
+
+        function showSmallPorts(node, show) {
+            node.ports.each(function (port) {
+                if (port.portId !== "") { // don't change the default port, which is the big shape
+                    port.fill = show ? "rgba(0,0,0,.3)" : null;
+                }
+            });
+        }
+        function saveDescr() {
+            diagram.selection.each(function (n) {
+                n.data.Description = document.getElementById("descrDiv").value;
+            })
+        }
+        function selectDataObj(value) {
+            diagram.selection.each(function (n) {
+                n.data.name = value;
+                //Update the HTML state of this Inspector with the given object.                
+                inspector.inspectObject(n);
+            })
+        }
         // Show the diagram's model in JSON format that the user may edit
         function save() {
             const jsonDia = JSON.parse(diagram.model.toJson());
@@ -403,10 +407,6 @@
             document.getElementById("mySavedModel").value = diagram.model.toJson();
             diagram.isModified = false;
         }
-
-
-
-
 
         function download(content, fileName, contentType) {
             var a = document.createElement("a");
@@ -542,6 +542,7 @@
         var inspector = new Inspector("myInspectorDiv", diagram, {
             showIfNode: false,
             // allows for multiple nodes to be inspected at once
+            inspectSelection: true,
             multipleSelection: false,
             // max number of node properties will be shown when multiple selection is true
             showSize: 4,
@@ -572,7 +573,6 @@
                 },
             }
         });
-        window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 
