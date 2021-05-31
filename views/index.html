@@ -54,7 +54,7 @@
 
 
                         <label>Description:</label>
-                        <textarea id="descrDiv" rows="10" style="width: 95%;padding-left:4px;resize:none"></textarea>
+                        <textarea id="descrDiv" onchange="saveDescr()"rows="10" style="width: 95%;padding-left:4px;resize:none"></textarea>
                     </div>
 
 
@@ -80,24 +80,6 @@
     <script type="text/javascript" src="javascripts/DataInspector.js"></script>
     <link rel="stylesheet" href="stylesheets/DataInspector.css" />
     <script>
-        function mouseEnter(e, obj) {
-            var shape = obj.findObject("SHAPE");
-            shape.fill = "#1E90FF";
-            shape.stroke = "#00BFFF";
-            var text = obj.findObject("TEXT");
-            text.stroke = "white";
-        };
-
-        function mouseLeave(e, obj) {
-            var shape = obj.findObject("SHAPE");
-            // Return the Shape's fill and stroke to the defaults
-            shape.fill = obj.data.color;
-            shape.stroke = null;
-            // Return the TextBlock's stroke to its default
-            var text = obj.findObject("TEXT");
-            text.stroke = "black";
-        };
-
         function deleteNode(e, obj) {
             diagram.commandHandler.deleteSelection();
         }
@@ -125,6 +107,11 @@
                     port.fill = show ? "rgba(0,0,0,.3)" : null;
                 }
             });
+        }
+        function saveDescr()    {
+            diagram.selection.each(function (n) {
+                        n.data.Description=document.getElementById("descrDiv").value;
+                    })
         }
 
         var $ = go.GraphObject.make;
