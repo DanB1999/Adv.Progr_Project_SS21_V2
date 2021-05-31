@@ -54,7 +54,8 @@
 
 
                         <label>Description:</label>
-                        <textarea id="descrDiv" onchange="saveDescr()"rows="10" style="width: 95%;padding-left:4px;resize:none"></textarea>
+                        <textarea id="descrDiv" onchange="saveDescr()" rows="10"
+                            style="width: 95%;padding-left:4px;resize:none"></textarea>
                     </div>
 
 
@@ -108,10 +109,10 @@
                 }
             });
         }
-        function saveDescr()    {
+        function saveDescr() {
             diagram.selection.each(function (n) {
-                        n.data.Description=document.getElementById("descrDiv").value;
-                    })
+                n.data.Description = document.getElementById("descrDiv").value;
+            })
         }
 
         var $ = go.GraphObject.make;
@@ -215,9 +216,11 @@
                     showSmallPorts(node, false);
                 },
                 click: function (e, obj) {
-                    e.diagram.selection.each(function (n) {
-                        document.getElementById("descrDiv").value = n.data.Description;
-                    })
+                    if (obj instanceof go.Node) {
+                        e.diagram.selection.each(function (n) {
+                            document.getElementById("descrDiv").value = n.data.Description;
+                        })
+                    }
                 }
             });
 
@@ -273,7 +276,15 @@
                         segmentOffset: new go.Point(0, 10)
                     })
 
-                ));
+                ), {
+                click: function (e, obj) {
+                    if (obj instanceof go.Link) {
+                        e.diagram.selection.each(function (l) {
+                            document.getElementById("descrDiv").value = l.data.Description;
+                        })
+                    }
+                }
+            });
 
         var link = diagram.links.first();
         if (link) link.isSelected = true;
