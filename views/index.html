@@ -104,7 +104,7 @@
                         e.subject.routing = go.Link.Orthogonal;
                     },
                     "animationManager.isEnabled": false,
-                    "undoManager.isEnabled": true
+                    "undoManager.isEnabled": true,
                 });
 
         diagram.addDiagramListener("Modified", function (e) {
@@ -118,15 +118,23 @@
             }
         });
 
-        diagram.addDiagramListener("BackgroundSingleClicked", function (e) {
-            document.getElementById("descrField").innerHTML = null;
-            document.getElementById("select").innerHTML = null;
-            document.getElementById("myInspectorDiv").innerHTML = null;
+        var isExternal=false;
+        diagram.addDiagramListener("ExternalObjectsDropped", function (e) {
+            document.getElementById("descrField").innerHTML =
+                '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
+                + 'style="width: 95%;padding-left:4px;resize:none"'
+                + 'placeholder="describe the application..."></textarea>';
+            document.getElementById("descrDiv").value = "";
+            isExternal=true;
         });
         diagram.addDiagramListener("ChangedSelection", function (e) {
-            document.getElementById("descrField").innerHTML = null;
             document.getElementById("select").innerHTML = null;
+            if(isExternal != true) {
+            document.getElementById("descrField").innerHTML = null;
             document.getElementById("myInspectorDiv").innerHTML = null;
+            }
+            else isExternal=false;
+
         });
 
 
@@ -327,7 +335,7 @@
                 })
             );
 
-            function deleteNode(e, obj) {
+        function deleteNode(e, obj) {
             diagram.commandHandler.deleteSelection();
         }
 
