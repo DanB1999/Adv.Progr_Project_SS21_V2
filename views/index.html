@@ -121,6 +121,7 @@
         var isExternal = false;
         var isLinked = false;
         diagram.addDiagramListener("ExternalObjectsDropped", function (e) {
+            document.getElementById("select").innerHTML = null;
             diagram.selection.each(function (n) {
                 showDescr(e, n);
             })
