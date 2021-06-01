@@ -118,23 +118,31 @@
             }
         });
 
-        var isExternal=false;
+        var isExternal = false;
+        var isLinked = false;
         diagram.addDiagramListener("ExternalObjectsDropped", function (e) {
-            document.getElementById("descrField").innerHTML =
-                '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
-                + 'style="width: 95%;padding-left:4px;resize:none"'
-                + 'placeholder="describe the application..."></textarea>';
-            document.getElementById("descrDiv").value = "";
-            isExternal=true;
+            diagram.selection.each(function (n) {
+                showDescr(e, n);
+            })
+            isExternal = true;
+        });
+        diagram.addDiagramListener("LinkDrawn", function (e) {
+            diagram.selection.each(function (l) {
+                showSelect(e, l);
+                showDescr(e, l);;
+            })
+            isLinked = true;
         });
         diagram.addDiagramListener("ChangedSelection", function (e) {
-            document.getElementById("select").innerHTML = null;
-            if(isExternal != true) {
-            document.getElementById("descrField").innerHTML = null;
-            document.getElementById("myInspectorDiv").innerHTML = null;
+            if (isExternal != true && isLinked != true ) {
+                document.getElementById("select").innerHTML = null;
+                document.getElementById("descrField").innerHTML = null;
+                document.getElementById("myInspectorDiv").innerHTML = null;
             }
-            else isExternal=false;
-
+            else {
+                isExternal = false;
+                isLinked = false;
+            }
         });
 
 
@@ -193,20 +201,7 @@
                 mouseLeave: function (e, node) {
                     showSmallPorts(node, false);
                 },
-                click: function (e, obj) {
-                    if (obj instanceof go.Node) {
-                        e.diagram.selection.each(function (n) {
-                            document.getElementById("descrField").innerHTML =
-                                '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
-                                + 'style="width: 95%;padding-left:4px;resize:none"'
-                                + 'placeholder="describe the application..."></textarea>';
-                            if (n.data.Description)
-                                document.getElementById("descrDiv").value = n.data.Description;
-                            else
-                                document.getElementById("descrDiv").value = "";
-                        })
-                    }
-                }
+                click:showDescr 
             });
 
         var myOverview =
@@ -260,28 +255,7 @@
                     })
 
                 ), {
-                click: function (e, obj) {
-                    var text = "";
-                    var dataObjects = ['DataObj1', 'DataObj2', 'DataObj3'];
-                    if (obj instanceof go.Link) {
-                        e.diagram.selection.each(function (l) {
-                            text += '<label>Choose from existing DataObjects</label>'
-                                + '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">'
-                                + '<option value="">Select</option>';
-
-                            for (i in dataObjects) {
-                                text += '<option value=' + dataObjects[i] + '>' + dataObjects[i] + '</option>'
-                            }
-                            document.getElementById("select").innerHTML = text;
-                            document.getElementById("descrField").innerHTML =
-                                '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
-                                + 'style="width: 95%;padding-left:4px;resize:none"'
-                                + 'placeholder="describe the data object..."></textarea>';
-                            document.getElementById("descrDiv").value = l.data.Description;
-
-                        })
-                    }
-                }
+                click: showSelect,
             });
 
         var link = diagram.links.first();
@@ -375,6 +349,37 @@
                 //Update the HTML state of this Inspector with the given object.                
                 inspector.inspectObject(n);
             })
+        }
+        function showSelect(e, obj) {
+            var text = "";
+            var dataObjects = ['DataObj1', 'DataObj2', 'DataObj3'];
+            if (obj instanceof go.Link) {
+                e.diagram.selection.each(function (l) {
+                    text += '<label>Choose from existing DataObjects</label>'
+                        + '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">'
+                        + '<option value="">Select</option>';
+
+                    for (i in dataObjects) {
+                        text += '<option value=' + dataObjects[i] + '>' + dataObjects[i] + '</option>'
+                    }
+                    document.getElementById("select").innerHTML = text;
+                })
+                showDescr(e, obj);
+            }
+        }
+        function showDescr(e, obj) {
+            //if (obj instanceof go.Node) {
+                e.diagram.selection.each(function (n) {
+                    document.getElementById("descrField").innerHTML =
+                        '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
+                        + 'style="width: 95%;padding-left:4px;resize:none"'
+                        + 'placeholder="Enter an Description..."></textarea>';
+                    if (n.data.Description)
+                        document.getElementById("descrDiv").value = n.data.Description;
+                    else
+                        document.getElementById("descrDiv").value = "";
+                })
+            //}
         }
         // Show the diagram's model in JSON format that the user may edit
         function save() {
