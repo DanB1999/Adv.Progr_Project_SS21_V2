@@ -583,6 +583,16 @@
                     show: Inspector.showIfNode,
                     type: 'date'
                 },
+                "Software":{
+                    show: Inspector.showIfNode,
+                    type: "select",
+                    choices: function(){
+                        var types =["COTS", "Proprietary", "N/A"]
+                        for (x in types) {
+                            return types                            
+                        }
+                    }
+                },
                 "personalData?:": {
                     show: Inspector.showIfLink,
                     type: "checkbox"
