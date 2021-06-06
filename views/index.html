@@ -38,12 +38,7 @@
         <div class="row" style="width: 100%; display: flex; justify-content: space-between">
             <div class="column side" id="myPaletteDiv" style="width: 200px; height: 620px; margin-left: 4px; background-color: whitesmoke; border: solid 1px black">
             </div>
-<<<<<<< Updated upstream
-            <div class="column middle" id="myDiagramDiv"
-                style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
-=======
             <div class="column middle" id="myDiagramDiv" style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
->>>>>>> Stashed changes
             <div class="column right"> <span style="display: inline-block; vertical-align: top; margin-left:2px">
                     <div id="myOverviewDiv"
                         style="width:310px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
@@ -63,17 +58,6 @@
             </span>
             </div>
         </div>
-<<<<<<< Updated upstream
-    </div>
-    <!--<button id="SaveButton" onclick="save()">Save</button>  -->
-    <button onclick="load()">Load</button>
-    <label>Add nodes to Diagram (.xls)</label>
-    <input type="file" id="upload" name="files[]" accept=""></input>
-    <label>Load complete diagram from .json file</label>
-    <input type="file" onchange="readFile(event)" accept=".json"></input>
-    <div class="footer" style="padding:2px">
-        <textarea id="mySavedModel" style="width:100%;height:300px">
-=======
         <!--<button id="SaveButton" onclick="save()">Save</button>  -->
         <button onclick="load()">Load</button>
         <label>Add nodes to Diagram (.xls)</label>
@@ -82,7 +66,6 @@
         <input type="file" onchange="readFile(event)" accept=".json"></input>
         <div class="footer" style="padding:2px">
             <textarea id="mySavedModel" style="width:100%;height:300px">
->>>>>>> Stashed changes
 	  </textarea>
             <button id="SaveButton" onclick="toFile()">Download</button>
 
@@ -93,10 +76,6 @@
     <script type="text/javascript" src="javascripts/DataInspector.js"></script>
     <link rel="stylesheet" href="stylesheets/DataInspector.css" />
     <script>
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
         var $ = go.GraphObject.make;
 
         diagram =
@@ -140,39 +119,12 @@
 
         var isExternal = false;
         var isLinked = false;
-<<<<<<< Updated upstream
-        diagram.addDiagramListener("ExternalObjectsDropped", function (e) {
-            document.getElementById("select").innerHTML = null;
-            diagram.selection.each(function (n) {
-                showDescr(e, n);
-            })
-            isExternal = true;
-        });
-        diagram.addDiagramListener("LinkDrawn", function (e) {
-            diagram.selection.each(function (l) {
-                showSelect(e, l);
-                showDescr(e, l);;
-            })
-            isLinked = true;
-        });
-        diagram.addDiagramListener("ChangedSelection", function (e) {
-            if (isExternal != true && isLinked != true ) {
-                document.getElementById("select").innerHTML = null;
-                document.getElementById("descrField").innerHTML = null;
-                document.getElementById("myInspectorDiv").innerHTML = null;
-            }
-            else {
-                isExternal = false;
-                isLinked = false;
-            }
-=======
         diagram.addDiagramListener("ExternalObjectsDropped", function(e) {
             document.getElementById("select").innerHTML = null;
             diagram.selection.each(function(n) {
                 showDescr(e, n);
             })
             isExternal = true;
->>>>>>> Stashed changes
         });
         diagram.addDiagramListener("LinkDrawn", function(e) {
             diagram.selection.each(function(l) {
@@ -243,16 +195,6 @@
                 makePort("L", go.Spot.Left, true, true),
                 makePort("R", go.Spot.Right, true, true),
                 makePort("B", go.Spot.Bottom, true, true), { // handle mouse enter/leave events to show/hide the ports
-<<<<<<< Updated upstream
-                mouseEnter: function (e, node) {
-                    showSmallPorts(node, true);
-                },
-                mouseLeave: function (e, node) {
-                    showSmallPorts(node, false);
-                },
-                click:showDescr 
-            });
-=======
                     mouseEnter: function(e, node) {
                         showSmallPorts(node, true);
                     },
@@ -261,7 +203,6 @@
                     },
                     click: showDescr
                 });
->>>>>>> Stashed changes
 
         var myOverview =
             $(go.Overview, "myOverviewDiv", {
@@ -280,7 +221,6 @@
                     adjusting: go.Link.End,
                     curve: go.Link.JumpOver,
                     corner: 5,
-                    toShortLength: 4
                 },
                 new go.Binding("points").makeTwoWay(),
                 // remember the Link.routing too
@@ -310,21 +250,12 @@
                         }),
                     $(go.TextBlock, // this is a Link label
                         new go.Binding("text", "name"), {
-<<<<<<< Updated upstream
-                        segmentOffset: new go.Point(0, 10)
-                    })
-
-                ), {
-                click: showSelect,
-            });
-=======
                             segmentOffset: new go.Point(0, 10)
                         })
 
                 ), {
                     click: showSelect,
                 });
->>>>>>> Stashed changes
 
         var link = diagram.links.first();
         if (link) link.isSelected = true;
@@ -451,73 +382,6 @@
             }
         }
 
-<<<<<<< Updated upstream
-        function deleteNode(e, obj) {
-            diagram.commandHandler.deleteSelection();
-        }
-
-        //functions:
-        function makePort(name, spot, output, input) {
-            // the port is basically just a small transparent square
-            return $(go.Shape, "Circle", {
-                fill: null, // not seen, by default; set to a translucent gray by showSmallPorts, defined below
-                stroke: null,
-                desiredSize: new go.Size(7, 7),
-                alignment: spot, // align the port on the main Shape
-                alignmentFocus: spot, // just inside the Shape
-                portId: name, // declare this object to be a "port"
-                fromSpot: spot,
-                toSpot: spot, // declare where links may connect at this port
-                fromLinkable: output,
-                toLinkable: input, // declare whether the user may draw links to/from here
-                cursor: "pointer" // show a different cursor to indicate potential link point
-            });
-        }
-
-        function showSmallPorts(node, show) {
-            node.ports.each(function (port) {
-                if (port.portId !== "") { // don't change the default port, which is the big shape
-                    port.fill = show ? "rgba(0,0,0,.3)" : null;
-                }
-            });
-        }
-        function saveDescr() {
-            diagram.selection.each(function (n) {
-                n.data.Description = document.getElementById("descrDiv").value;
-            })
-        }
-        function selectDataObj(value) {
-            diagram.selection.each(function (n) {
-                n.data.name = value;
-                //Update the HTML state of this Inspector with the given object.                
-                inspector.inspectObject(n);
-            })
-        }
-        function showSelect(e, obj) {
-            var text = "";
-            var dataObjects = ['DataObj1', 'DataObj2', 'DataObj3'];
-            if (obj instanceof go.Link) {
-                e.diagram.selection.each(function (l) {
-                    text += '<label>Choose from existing DataObjects</label>'
-                        + '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">'
-                        + '<option value="">Select</option>';
-
-                    for (i in dataObjects) {
-                        text += '<option value=' + dataObjects[i] + '>' + dataObjects[i] + '</option>'
-                    }
-                    document.getElementById("select").innerHTML = text;
-                })
-                showDescr(e, obj);
-            }
-        }
-        function showDescr(e, obj) {
-            //if (obj instanceof go.Node) {
-                e.diagram.selection.each(function (n) {
-                    document.getElementById("descrField").innerHTML =
-                        '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"'
-                        + 'style="width: 95%;padding-left:4px;resize:none"'
-                        + 'placeholder="Enter an Description..."></textarea>';
-=======
         function showDescr(e, obj) {
             //if (obj instanceof go.Node) {
             e.diagram.selection.each(function(n) {
@@ -525,17 +389,12 @@
                         '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"' +
                         'style="width: 95%;padding-left:4px;resize:none"' +
                         'placeholder="Enter an Description..."></textarea>';
->>>>>>> Stashed changes
                     if (n.data.Description)
                         document.getElementById("descrDiv").value = n.data.Description;
                     else
                         document.getElementById("descrDiv").value = "";
                 })
-<<<<<<< Updated upstream
-            //}
-=======
                 //}
->>>>>>> Stashed changes
         }
         // Show the diagram's model in JSON format that the user may edit
         function save() {
@@ -736,15 +595,6 @@
                     show: Inspector.showIfNode,
                     type: 'date'
                 },
-<<<<<<< Updated upstream
-                "Software":{
-                    show: Inspector.showIfNode,
-                    type: "select",
-                    choices: function(){
-                        var types =["COTS", "Proprietary", "N/A"]
-                        for (x in types) {
-                            return types                            
-=======
                 "Software": {
                     show: Inspector.showIfNode,
                     type: "select",
@@ -752,7 +602,6 @@
                         var types = ["COTS", "Proprietary", "N/A"]
                         for (x in types) {
                             return types
->>>>>>> Stashed changes
                         }
                     }
                 },
