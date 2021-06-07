@@ -347,6 +347,17 @@
         function selectDataObj(value) {
             diagram.selection.each(function(n) {
                 n.data.name = value;
+
+                const jsonDia = JSON.parse(diagram.model.toJson());
+
+                for (var x in jsonDia.linkDataArray) {
+                    if (jsonDia.linkDataArray[x].name == value) {
+                        n.data.Description = jsonDia.linkDataArray[x].Description;
+                        break;
+                    }
+                }
+                document.getElementById("descrDiv").value = n.data.Description;
+
                 //Update the HTML state of this Inspector with the given object.                
                 inspector.inspectObject(n);
                 save();
@@ -363,7 +374,17 @@
                 if (jsonDia.linkDataArray[x].name == undefined) {
 
                 } else {
-                    dataObjects[x] = jsonDia.linkDataArray[x].name;
+                    check = true;
+                    for (i in dataObjects) {
+                        if (jsonDia.linkDataArray[x].name == dataObjects[i]) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check) {
+                        dataObjects[x] = jsonDia.linkDataArray[x].name;
+                    }
+
                 }
             }
 
@@ -600,7 +621,9 @@
                     type: "select",
                     choices: function() {
                         var types = ["COTS", "Proprietary", "N/A"]
-                        for (x in types) {return types}
+                        for (x in types) {
+                            return types
+                        }
                     }
                 },
                 "personalData?:": {
