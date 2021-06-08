@@ -356,7 +356,7 @@
                         break;
                     }
                 }
-                document.getElementById("descrDiv").value = n.data.Description;
+                document.getElementById("descrDiv").innerHTML = n.data.Description;
 
                 //Update the HTML state of this Inspector with the given object.                
                 inspector.inspectObject(n);
@@ -369,7 +369,6 @@
             const jsonDia = JSON.parse(diagram.model.toJson());
 
             var dataObjects = [];
-
             for (var x in jsonDia.linkDataArray) {
                 if (jsonDia.linkDataArray[x].name == undefined) {
 
@@ -384,7 +383,6 @@
                     if (check) {
                         dataObjects[x] = jsonDia.linkDataArray[x].name;
                     }
-
                 }
             }
 
