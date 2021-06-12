@@ -370,12 +370,9 @@
                         break;
                     }
                 }
-
-                document.getElementById("descrDiv").innerHTML = n.data.Description;
-
                 //Update the HTML state of this Inspector with the given object.                
                 inspector.inspectObject(n);
-                save();
+                document.getElementById("descrDiv").value = n.data.Description;
             })
         }
 
