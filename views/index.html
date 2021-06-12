@@ -16,14 +16,14 @@
         height: 800px;
         margin-left: 20%
     }
-    
+
     #toolbar {
         width: 100%;
         padding-top: 10px;
         padding-bottom: 10px;
         border: solid 1 px blue
     }
-    
+
     .row:after {
         content: "";
         display: table;
@@ -36,9 +36,11 @@
     <div id="toolbar"> </div>
     <div class="main">
         <div class="row" style="width: 100%; display: flex; justify-content: space-between">
-            <div class="column side" id="myPaletteDiv" style="width: 200px; height: 620px; margin-left: 4px; background-color: whitesmoke; border: solid 1px black">
+            <div class="column side" id="myPaletteDiv"
+                style="width: 200px; height: 620px; margin-left: 4px; background-color: whitesmoke; border: solid 1px black">
             </div>
-            <div class="column middle" id="myDiagramDiv" style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
+            <div class="column middle" id="myDiagramDiv"
+                style="flex-grow: 1;padding-right:2px;height: 620px; border: solid 1px black"></div>
             <div class="column right"> <span style="display: inline-block; vertical-align: top; margin-left:2px">
                     <div id="myOverviewDiv"
                         style="width:310px ; height: 200px; display: flex; justify-content: space-between; border: solid 1px black">
@@ -48,7 +50,7 @@
                         <div id="select"></div>
                         <h3>Properties:</h3>
                         <div id="myInspectorDiv" style="width:95%"></div>
-                        
+
                         <div id="descrField" style="margin-bottom:6px;"></div>
                         <button id="SaveButton" onclick="save()">Save</button>
                     </div>
@@ -56,20 +58,20 @@
 
             </div>
             </span>
-            </div>
         </div>
-        <!--<button id="SaveButton" onclick="save()">Save</button>  -->
-        <button onclick="load()">Load</button>
-        <label>Add nodes to Diagram (.xls)</label>
-        <input type="file" id="upload" name="files[]" accept=""></input>
-        <label>Load complete diagram from .json file</label>
-        <input type="file" onchange="readFile(event)" accept=".json"></input>
-        <div class="footer" style="padding:2px">
-            <textarea id="mySavedModel" style="width:100%;height:300px">
+    </div>
+    <!--<button id="SaveButton" onclick="save()">Save</button>  -->
+    <button onclick="load()">Load</button>
+    <label>Add nodes to Diagram (.xls)</label>
+    <input type="file" id="upload" name="files[]" accept=""></input>
+    <label>Load complete diagram from .json file</label>
+    <input type="file" onchange="readFile(event)" accept=".json"></input>
+    <div class="footer" style="padding:2px">
+        <textarea id="mySavedModel" style="width:100%;height:300px">
 	  </textarea>
-            <button id="SaveButton" onclick="toFile()">Download</button>
+        <button id="SaveButton" onclick="toFile()">Download</button>
 
-        </div>
+    </div>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
     <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
@@ -83,8 +85,8 @@
                 {
                     // supply a simple narrow grid that manually reshaped link routes will follow
                     grid: $(go.Panel, "Grid", {
-                            gridCellSize: new go.Size(8, 8)
-                        },
+                        gridCellSize: new go.Size(8, 8)
+                    },
                         $(go.Shape, "LineH", {
                             stroke: "lightgray",
                             strokeWidth: 0.5
@@ -99,14 +101,14 @@
                     // when the user reshapes a Link, change its Link.routing from AvoidsNodes to Orthogonal,
                     // so that combined with Link.adjusting == End the link will retain its reshaped mid points
                     // even after nodes are moved
-                    "LinkReshaped": function(e) {
+                    "LinkReshaped": function (e) {
                         e.subject.routing = go.Link.Orthogonal;
                     },
                     "animationManager.isEnabled": false,
                     "undoManager.isEnabled": true,
                 });
 
-        diagram.addDiagramListener("Modified", function(e) {
+        diagram.addDiagramListener("Modified", function (e) {
             var button = document.getElementById("SaveButton");
             if (button) button.disabled = !diagram.isModified;
             var idx = document.title.indexOf("*");
@@ -119,21 +121,32 @@
 
         var isExternal = false;
         var isLinked = false;
-        diagram.addDiagramListener("ExternalObjectsDropped", function(e) {
+        diagram.addDiagramListener("SelectionMoved", function (e) {
+            diagram.selection.each(function (n) {
+                if (n instanceof go.Node) {
+                    document.getElementById("select").innerHTML = null;
+                }
+                else {
+                    showSelect(e, n);
+                }
+                showDescr(e, n);
+            })
+        });
+        diagram.addDiagramListener("ExternalObjectsDropped", function (e) {
             document.getElementById("select").innerHTML = null;
-            diagram.selection.each(function(n) {
+            diagram.selection.each(function (n) {
                 showDescr(e, n);
             })
             isExternal = true;
         });
-        diagram.addDiagramListener("LinkDrawn", function(e) {
-            diagram.selection.each(function(l) {
+        diagram.addDiagramListener("LinkDrawn", function (e) {
+            diagram.selection.each(function (l) {
                 showSelect(e, l);
                 showDescr(e, l);;
             })
             isLinked = true;
         });
-        diagram.addDiagramListener("ChangedSelection", function(e) {
+        diagram.addDiagramListener("ChangedSelection", function (e) {
             if (isExternal != true && isLinked != true) {
                 document.getElementById("select").innerHTML = null;
                 document.getElementById("descrField").innerHTML = null;
@@ -149,18 +162,18 @@
         //the node template describes how each Node should be constructed
         diagram.nodeTemplate =
             $(go.Node, "Spot", {
-                    locationSpot: go.Spot.Center
-                },
+                locationSpot: go.Spot.Center
+            },
                 new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify), {
-                    selectable: true
-                }, {
-                    resizable: true,
-                    resizeObjectName: "PANEL"
-                },
+                selectable: true
+            }, {
+                resizable: true,
+                resizeObjectName: "PANEL"
+            },
                 // the main object is a Panel that surrounds a TextBlock with a Shape
                 $(go.Panel, "Auto", {
-                        name: "PANEL"
-                    },
+                    name: "PANEL"
+                },
                     new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
                     $(go.Shape, "Procedure", new go.Binding("figure"), // default figure
                         {
@@ -173,36 +186,36 @@
                         new go.Binding("figure"),
                         new go.Binding("fill")),
                     $(go.TextBlock, {
-                            font: "bold 11pt Helvetica, Arial, sans-serif",
-                            margin: 8,
-                            maxSize: new go.Size(160, NaN),
-                            wrap: go.TextBlock.WrapFit,
-                            editable: true
-                        },
+                        font: "bold 11pt Helvetica, Arial, sans-serif",
+                        margin: 8,
+                        maxSize: new go.Size(160, NaN),
+                        wrap: go.TextBlock.WrapFit,
+                        editable: true
+                    },
                         new go.Binding("text", "name").makeTwoWay()), {
-                        contextMenu: //define a context menu foe each node
-                            $("ContextMenu",
+                    contextMenu: //define a context menu foe each node
+                        $("ContextMenu",
                             $("ContextMenuButton",
                                 $(go.TextBlock, "delete"), {
-                                    click: deleteNode
-                                }
+                                click: deleteNode
+                            }
                             )
                         )
-                    }
+                }
                 ),
                 // four small named ports, one on each side:
                 makePort("T", go.Spot.Top, true, true),
                 makePort("L", go.Spot.Left, true, true),
                 makePort("R", go.Spot.Right, true, true),
                 makePort("B", go.Spot.Bottom, true, true), { // handle mouse enter/leave events to show/hide the ports
-                    mouseEnter: function(e, node) {
-                        showSmallPorts(node, true);
-                    },
-                    mouseLeave: function(e, node) {
-                        showSmallPorts(node, false);
-                    },
-                    click: showDescr
-                });
+                mouseEnter: function (e, node) {
+                    showSmallPorts(node, true);
+                },
+                mouseLeave: function (e, node) {
+                    showSmallPorts(node, false);
+                },
+                click: showDescr
+            });
 
         var myOverview =
             $(go.Overview, "myOverviewDiv", {
@@ -217,15 +230,15 @@
                     reshapable: true,
                     resegmentable: true
                 }, {
-                    routing: go.Link.AvoidsNodes, // but this is changed to go.Link.Orthgonal when the Link is reshaped
-                    adjusting: go.Link.End,
-                    curve: go.Link.JumpOver,
-                    corner: 5,
-                },
+                routing: go.Link.AvoidsNodes, // but this is changed to go.Link.Orthgonal when the Link is reshaped
+                adjusting: go.Link.End,
+                curve: go.Link.JumpOver,
+                corner: 5,
+            },
                 new go.Binding("points").makeTwoWay(),
                 // remember the Link.routing too
                 new go.Binding("routing", "routing", go.Binding.parseEnum(go.Link, go.Link.AvoidsNodes))
-                .makeTwoWay(go.Binding.toString),
+                    .makeTwoWay(go.Binding.toString),
                 $(go.Shape, // the link path shape
                     {
                         isPanelMain: true,
@@ -237,8 +250,8 @@
                         stroke: null
                     }),
                 $(go.Panel, "Auto", {
-                        cursor: "move"
-                    }, // visual hint that the user can do something with this link label
+                    cursor: "move"
+                }, // visual hint that the user can do something with this link label
                     $(go.Shape, // the label background, which becomes transparent around the edges
                         {
                             fill: $(go.Brush, "Radial", {
@@ -250,12 +263,12 @@
                         }),
                     $(go.TextBlock, // this is a Link label
                         new go.Binding("text", "name"), {
-                            segmentOffset: new go.Point(0, 10)
-                        })
+                        segmentOffset: new go.Point(0, 10)
+                    })
 
                 ), {
-                    click: showSelect,
-                });
+                click: showSelect,
+            });
 
         var link = diagram.links.first();
         if (link) link.isSelected = true;
@@ -278,34 +291,34 @@
             $("ContextMenu",
                 $("ContextMenuButton",
                     $(go.TextBlock, "Undo"), {
-                        click: function(e, obj) {
-                            e.diagram.commandHandler.undo();
-                        }
-                    },
-                    new go.Binding("visible", "", function(o) {
+                    click: function (e, obj) {
+                        e.diagram.commandHandler.undo();
+                    }
+                },
+                    new go.Binding("visible", "", function (o) {
                         return o.diagram.commandHandler.canUndo();
                     }).ofObject()),
                 $("ContextMenuButton",
                     $(go.TextBlock, "Redo"), {
-                        click: function(e, obj) {
-                            e.diagram.commandHandler.redo();
-                        }
-                    },
-                    new go.Binding("visible", "", function(o) {
+                    click: function (e, obj) {
+                        e.diagram.commandHandler.redo();
+                    }
+                },
+                    new go.Binding("visible", "", function (o) {
                         return o.diagram.commandHandler.canRedo();
                     }).ofObject()),
                 $("ContextMenuButton",
                     $(go.TextBlock, "New Node"), {
-                        click: function(e, obj) {
-                            e.diagram.commit(function(d) {
-                                var data = {};
-                                d.model.addNodeData(data);
-                                part = d.findPartForData(data); // must be same data reference, not a new {}
-                                // set location to saved mouseDownPoint in ContextMenuTool
-                                part.location = d.toolManager.contextMenuTool.mouseDownPoint;
-                            }, 'new node');
-                        }
-                    })
+                    click: function (e, obj) {
+                        e.diagram.commit(function (d) {
+                            var data = {};
+                            d.model.addNodeData(data);
+                            part = d.findPartForData(data); // must be same data reference, not a new {}
+                            // set location to saved mouseDownPoint in ContextMenuTool
+                            part.location = d.toolManager.contextMenuTool.mouseDownPoint;
+                        }, 'new node');
+                    }
+                })
             );
 
         function deleteNode(e, obj) {
@@ -331,7 +344,7 @@
         }
 
         function showSmallPorts(node, show) {
-            node.ports.each(function(port) {
+            node.ports.each(function (port) {
                 if (port.portId !== "") { // don't change the default port, which is the big shape
                     port.fill = show ? "rgba(0,0,0,.3)" : null;
                 }
@@ -339,23 +352,25 @@
         }
 
         function saveDescr() {
-            diagram.selection.each(function(n) {
+            diagram.selection.each(function (n) {
                 n.data.Description = document.getElementById("descrDiv").value;
             })
         }
 
         function selectDataObj(value) {
-            diagram.selection.each(function(n) {
-                n.data.name = value;
+            diagram.selection.each(function (n) {
 
                 const jsonDia = JSON.parse(diagram.model.toJson());
 
                 for (var x in jsonDia.linkDataArray) {
                     if (jsonDia.linkDataArray[x].name == value) {
                         n.data.Description = jsonDia.linkDataArray[x].Description;
+                        n.data.personalData = jsonDia.linkDataArray[x].personalData;
+                        n.data.name = jsonDia.linkDataArray[x].name;
                         break;
                     }
                 }
+
                 document.getElementById("descrDiv").innerHTML = n.data.Description;
 
                 //Update the HTML state of this Inspector with the given object.                
@@ -387,13 +402,13 @@
             }
 
             if (obj instanceof go.Link) {
-                e.diagram.selection.each(function(l) {
+                e.diagram.selection.each(function (l) {
                     text += '<label>Choose from existing DataObjects</label>' +
                         '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">' +
                         '<option value="">Select</option>';
 
                     for (i in dataObjects) {
-                        text += '<option value=' + dataObjects[i] + '>' + dataObjects[i] + '</option>'
+                        text += '<option value="' + dataObjects[i] + '">' + dataObjects[i] + '</option>'
                     }
                     document.getElementById("select").innerHTML = text;
                 })
@@ -403,17 +418,17 @@
 
         function showDescr(e, obj) {
             //if (obj instanceof go.Node) {
-            e.diagram.selection.each(function(n) {
-                    document.getElementById("descrField").innerHTML =
-                        '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"' +
-                        'style="width: 95%;padding-left:4px;resize:none"' +
-                        'placeholder="Enter an Description..."></textarea>';
-                    if (n.data.Description)
-                        document.getElementById("descrDiv").value = n.data.Description;
-                    else
-                        document.getElementById("descrDiv").value = "";
-                })
-                //}
+            e.diagram.selection.each(function (n) {
+                document.getElementById("descrField").innerHTML =
+                    '<br><label>Description:</label><textarea id="descrDiv" onchange="saveDescr()" rows="10"' +
+                    'style="width: 95%;padding-left:4px;resize:none"' +
+                    'placeholder="Enter an Description..."></textarea>';
+                if (n.data.Description)
+                    document.getElementById("descrDiv").value = n.data.Description;
+                else
+                    document.getElementById("descrDiv").value = "";
+            })
+            //}
         }
         // Show the diagram's model in JSON format that the user may edit
         function save() {
@@ -469,16 +484,16 @@
             jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
             download(jsonData, 'myDiagram.json', 'application/json');
         }
-        var ExcelToJSON = function() {
-            this.parseExcel = function(file) {
+        var ExcelToJSON = function () {
+            this.parseExcel = function (file) {
                 var reader = new FileReader();
 
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     var data = e.target.result;
                     var workbook = XLSX.read(data, {
                         type: 'binary'
                     });
-                    workbook.SheetNames.forEach(function(sheetName) {
+                    workbook.SheetNames.forEach(function (sheetName) {
                         // Here is your object
                         var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                         var json_object = JSON.stringify(XL_row_object);
@@ -495,7 +510,7 @@
                         diagram.commitTransaction("make new node");
                     })
                 };
-                reader.onerror = function(ex) {
+                reader.onerror = function (ex) {
                     console.log(ex);
                 };
                 reader.readAsBinaryString(file);
@@ -513,7 +528,7 @@
         function readFile() {
             var input = event.target;
             var reader = new FileReader();
-            reader.onload = function() {
+            reader.onload = function () {
                 var text = reader.result;
                 var json = JSON.parse(text)
                 diagram.model = go.Model.fromJson(json);
@@ -617,20 +632,20 @@
                 "Software": {
                     show: Inspector.showIfNode,
                     type: "select",
-                    choices: function() {
+                    choices: function () {
                         var types = ["N/A", "COTS", "Proprietary"]
                         for (x in types) {
                             return types
                         }
                     }
                 },
-                "personalData?:": {
+                "personalData": {
                     show: Inspector.showIfLink,
                     type: "checkbox"
                 },
-                "Professional Owner":{show: Inspector.showIfPresent},
-                "Technial Owner":{show: Inspector.showIfPresent},
-                "Sourcing ":{show: Inspector.showIfPresent}
+                "Professional Owner": { show: Inspector.showIfPresent },
+                "Technial Owner": { show: Inspector.showIfPresent },
+                "Sourcing ": { show: Inspector.showIfPresent }
             }
         });
     </script>
