@@ -147,6 +147,7 @@
             isLinked = true;
         });
         diagram.addDiagramListener("ChangedSelection", function (e) {
+            document.getElementById("propHeader").innerHTML="Properties:";
             if (isExternal != true && isLinked != true) {
                 document.getElementById("select").innerHTML = null;
                 document.getElementById("descrField").innerHTML = null;
