@@ -488,7 +488,7 @@
                         diagram.startTransaction("make new node");
                         for (i in json1) {
                             if (json1[i].name != null) {
-                                console.log(json1[i].Description);
+                                console.log(json1[i]);
                                 diagram.model.addNodeData(json1[i]);
                             }
                         }
@@ -618,7 +618,7 @@
                     show: Inspector.showIfNode,
                     type: "select",
                     choices: function() {
-                        var types = ["COTS", "Proprietary", "N/A"]
+                        var types = ["N/A", "COTS", "Proprietary"]
                         for (x in types) {
                             return types
                         }
@@ -628,6 +628,9 @@
                     show: Inspector.showIfLink,
                     type: "checkbox"
                 },
+                "Professional Owner":{show: Inspector.showIfPresent},
+                "Technial Owner":{show: Inspector.showIfPresent},
+                "Sourcing ":{show: Inspector.showIfPresent}
             }
         });
     </script>
