@@ -48,7 +48,7 @@
                     <div id="inspectorBlock" class="inspector"
                         style="width:310px;margin-top:2px;padding-left:2px;align-items:center">
                         <div id="select"></div>
-                        <h3>Properties:</h3>
+                        <h3 id="propHeader">Properties:</h3>
                         <div id="myInspectorDiv" style="width:95%"></div>
 
                         <div id="descrField" style="margin-bottom:6px;"></div>
@@ -367,12 +367,14 @@
                         n.data.Description = jsonDia.linkDataArray[x].Description;
                         n.data.personalData = jsonDia.linkDataArray[x].personalData;
                         n.data.name = jsonDia.linkDataArray[x].name;
+                        document.getElementById("SaveButton").disabled=false;                        
                         break;
                     }
                 }
                 //Update the HTML state of this Inspector with the given object.                
                 inspector.inspectObject(n);
-                document.getElementById("descrDiv").value = n.data.Description;
+                document.getElementById("descrDiv").value = n.data.Description;        
+
             })
         }
 
@@ -429,6 +431,10 @@
         }
         // Show the diagram's model in JSON format that the user may edit
         function save() {
+                document.getElementById("propHeader").innerHTML=null;
+                document.getElementById("select").innerHTML = "Saved Sucessfully!<br>Download JSON-file before leaving site";
+                document.getElementById("descrField").innerHTML = null;
+                document.getElementById("myInspectorDiv").innerHTML = null;
             const jsonDia = JSON.parse(diagram.model.toJson());
             check = true;
             for (var x in jsonDia.nodeDataArray) {
