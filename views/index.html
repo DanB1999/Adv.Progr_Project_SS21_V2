@@ -443,7 +443,7 @@
             const jsonDia = JSON.parse(diagram.model.toJson());
             check = true;
             for (var x in jsonDia.nodeDataArray) {
-                if (jsonDia.nodeDataArray[x].start > jsonDia.nodeDataArray[x].shutdown) {
+                if (jsonDia.nodeDataArray[x].start > jsonDia.nodeDataArray[x].shutdown && jsonDia.nodeDataArray[x].shutdown != "") {
                     window.alert("shutDownDate can't be befor releaseDate , Change shutDownDate of " + jsonDia.nodeDataArray[x].name);
                     check = false;
                     break;
