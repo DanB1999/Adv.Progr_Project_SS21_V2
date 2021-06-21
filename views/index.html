@@ -506,7 +506,8 @@
 
                         for (i in json1) { //endlose Schleife   
                             console.log(json1[0]);
-                            if (json1[i].name != null) {
+                            if (json1[i].id != null) {
+                                console.log(json1[i]);
                                 diagram.model.addNodeData(json1[i]);
                             }
                         }
