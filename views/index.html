@@ -50,7 +50,9 @@
                         <div id="myInspectorDiv" style="width:95%"></div>
 
                         <div id="descrField" style="margin-bottom:6px;"></div>
+
                         <button id="SaveButton" onclick="save()">Save</button>
+
                     </div>
 
 
@@ -69,7 +71,11 @@
             <textarea id="mySavedModel" style="width:100%;height:300px">
 	  </textarea>
             <button id="SaveButton" onclick="toFile()">Download</button>
-
+            <form ef='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+                accept=".json"></input>
+                <input type="file" id="sampleFile" name="sampleFile" />
+                <input type='submit' value='Upload!' />
+            </form>
         </div>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
@@ -370,7 +376,7 @@
                         break;
                     }
                 }
-                //Update the HTML state of this Inspector with the given object.                
+                //Update the HTML state of this Inspector with the given object.
                 inspector.inspectObject(n);
                 document.getElementById("descrDiv").value = n.data.Description;
 
@@ -479,11 +485,13 @@
             });
             a.href = URL.createObjectURL(file);
             a.download = fileName;
-            a.click();
+            document.getElementById("sampleFile").value = a;
+            //a.click();
         }
 
         function toFile(event) {
             jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
+
             download(jsonData, 'myDiagram.json', 'application/json');
         }
         var ExcelToJSON = function() {
