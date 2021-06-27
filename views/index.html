@@ -391,7 +391,7 @@
             const jsonDia = JSON.parse(diagram.model.toJson());
             var appArray=[];
                 for (var x in jsonDia.linkDataArray) {
-                    if (jsonDia.linkDataArray[x].personalData=true) {
+                    if (jsonDia.linkDataArray[x].personalData===true) {
                         appArray.push(jsonDia.linkDataArray[x].from);
                         appArray.push(jsonDia.linkDataArray[x].to);
                     }
