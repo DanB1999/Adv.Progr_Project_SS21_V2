@@ -77,6 +77,9 @@
                 <input type='submit' value='Upload!' />
             </form>
         </div>
+        <div>
+            <button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button>
+        </div>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
     <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
@@ -382,6 +385,43 @@
 
             })
         }
+        
+        function selectApp() {
+
+            const jsonDia = JSON.parse(diagram.model.toJson());
+            var appArray=[];
+                for (var x in jsonDia.linkDataArray) {
+                    if (jsonDia.linkDataArray[x].personalData=true) {
+                        appArray.push(jsonDia.linkDataArray[x].from);
+                        appArray.push(jsonDia.linkDataArray[x].to);
+                    }
+                }
+                for (var i in appArray){
+                    var counter=0;
+                    for (var o in appArray){
+                        console.log(appArray[o])
+                            if (appArray[i]==appArray[o]) {
+                                counter++
+                                if (counter>1) {
+                                    appArray[o]=null;
+                                    counter--;
+                                }
+                            }
+                        }
+                }
+                var apps=[];
+                for (var y in jsonDia.nodeDataArray) {
+                    for (var t in appArray) {
+                        if (appArray[t]==jsonDia.nodeDataArray[y].key){
+                            apps.push("Name: " + nodeDataArray[y].name + "| Version: " +  jsonDia.nodeDataArray[y].version + "| Release Date: "
+                            +jsonDia.nodeDataArray[y].start + "| Shutdown Date: " + jsonDia.nodeDataArray[y].shutdown + "| Source: "
+                            +jsonDia.nodeDataArray[y].source+ "\n");
+                        }
+                    }
+                }
+                console.log(apps)
+                download(apps, 'Apps.txt', 'application/txt');
+        }
 
         function showSelect(e, obj) {
             var text = "";
@@ -485,8 +525,7 @@
             });
             a.href = URL.createObjectURL(file);
             a.download = fileName;
-            document.getElementById("sampleFile").value = a;
-            //a.click();
+            a.click();
         }
 
         function toFile(event) {
@@ -523,7 +562,7 @@
                                     if (startDate != null) //if dates exists, convert to json date format
                                         changedStartDate = changeDate(startDate);
                                     if (shutDownDate != null)
-                                        changedShutDate = changeDate(shutDownDate);
+                                        changedShutDate = changeDate(shutDownDate);    
 
                                     if (nodeName != null) { //Add only Applications with visible name and ID
                                         json1[d].name = array2["Name Application"]; //change property name of current App 
