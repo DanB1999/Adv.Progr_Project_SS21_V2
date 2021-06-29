@@ -29,13 +29,16 @@
         display: table;
         clear: both;
     }
+    
     .custom-file-input {
-    color: transparent;
+        color: transparent;
     }
+    
     .custom-file-input::-webkit-file-upload-button {
-     visibility: hidden;
+        visibility: hidden;
     }
-        .custom-file-input::before {
+    
+    .custom-file-input::before {
         content: 'Select Excel File';
         color: black;
         display: inline-block;
@@ -47,30 +50,34 @@
         white-space: nowrap;
         cursor: pointer;
         text-shadow: 1px 1px #fff;
-       
         font-size: 10pt;
-        }
-        .custom-file-input:hover::before {
+    }
+    
+    .custom-file-input:hover::before {
         border-color: black;
-        }
-        .custom-file-input:active {
+    }
+    
+    .custom-file-input:active {
         outline: 0;
-        }
-        .custom-file-input:active::before {
-        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
-        }
-
-        body {
+    }
+    
+    .custom-file-input:active::before {
+        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+    }
+    
+    body {
         padding: 20px;
-        }
-
+    }
+    
     .custom-input {
-    color: transparent;
+        color: transparent;
     }
+    
     .custom-input::-webkit-file-upload-button {
-     visibility: hidden;
+        visibility: hidden;
     }
-        .custom-input::before {
+    
+    .custom-input::before {
         content: 'Select Json File';
         color: black;
         display: inline-block;
@@ -82,22 +89,24 @@
         white-space: nowrap;
         cursor: pointer;
         text-shadow: 1px 1px #fff;
-       
         font-size: 10pt;
-        }
-        .custom-input:hover::before {
+    }
+    
+    .custom-input:hover::before {
         border-color: black;
-        }
-        .custom-input:active {
+    }
+    
+    .custom-input:active {
         outline: 0;
-        }
-        .custom-input:active::before {
-        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
-        }
-
-        body {
+    }
+    
+    .custom-input:active::before {
+        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+    }
+    
+    body {
         padding: 20px;
-        }
+    }
 </style>
 
 <body>
@@ -138,15 +147,15 @@
         <!--div class="footer" style="padding:2px">
             <textarea id="mySavedModel" style="width:100%;height:300px">
 	  </textarea-->
-            <form ef='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
-                accept=".json"></input>
-                <input type="file" id="sampleFile" name="sampleFile" />
-                <input type='submit' value='Upload!' />
-            </form>
-        </div>
-        <div><button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button> 
-            <button onclick="DownloadDataObject()">Download Data Objects</button>
-            <button id="SaveButton" onclick="toFile()">Download</button></div>
+        <form ef='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
+            accept=".json"></input>
+            <input type="file" id="sampleFile" name="sampleFile" />
+            <input type='submit' value='Upload!' />
+        </form>
+    </div>
+    <div><button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button>
+        <button onclick="DownloadDataObject()">Download Data Objects</button>
+        <button id="SaveButton" onclick="toFile()">Download</button></div>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
     <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
@@ -452,42 +461,42 @@
 
             })
         }
-        
+
         function selectApp() {
 
             const jsonDia = JSON.parse(diagram.model.toJson());
-            var appArray=[];
-                for (var x in jsonDia.linkDataArray) {
-                    if (jsonDia.linkDataArray[x].personalData===true) {
-                        appArray.push(jsonDia.linkDataArray[x].from);
-                        appArray.push(jsonDia.linkDataArray[x].to);
-                    }
+            var appArray = [];
+            for (var x in jsonDia.linkDataArray) {
+                if (jsonDia.linkDataArray[x].personalData === true) {
+                    appArray.push(jsonDia.linkDataArray[x].from);
+                    appArray.push(jsonDia.linkDataArray[x].to);
                 }
-                for (var i in appArray){
-                    var counter=0;
-                    for (var o in appArray){
-                        console.log(appArray[o])
-                            if (appArray[i]==appArray[o]) {
-                                counter++
-                                if (counter>1) {
-                                    appArray[o]=null;
-                                    counter--;
-                                }
-                            }
-                        }
-                }
-                var apps=[];
-                for (var y in jsonDia.nodeDataArray) {
-                    for (var t in appArray) {
-                        if (appArray[t]==jsonDia.nodeDataArray[y].key){
-                            apps.push("Name: " + nodeDataArray[y].name + "| Version: " +  jsonDia.nodeDataArray[y].version + "| Release Date: "
-                            +jsonDia.nodeDataArray[y].start + "| Shutdown Date: " + jsonDia.nodeDataArray[y].shutdown + "| Source: "
-                            +jsonDia.nodeDataArray[y].source+ "\n");
+            }
+            for (var i in appArray) {
+                var counter = 0;
+                for (var o in appArray) {
+                    console.log(appArray[o])
+                    if (appArray[i] == appArray[o]) {
+                        counter++
+                        if (counter > 1) {
+                            appArray[o] = null;
+                            counter--;
                         }
                     }
                 }
-                console.log(apps)
-                download(apps, 'Apps.txt', 'application/txt');
+            }
+            var apps = [];
+            for (var y in jsonDia.nodeDataArray) {
+                for (var t in appArray) {
+                    if (appArray[t] == jsonDia.nodeDataArray[y].key) {
+                        apps.push("Name: " + nodeDataArray[y].name + "| Version: " + jsonDia.nodeDataArray[y].version + "| Release Date: " +
+                            jsonDia.nodeDataArray[y].start + "| Shutdown Date: " + jsonDia.nodeDataArray[y].shutdown + "| Source: " +
+                            jsonDia.nodeDataArray[y].source + "\n");
+                    }
+                }
+            }
+            console.log(apps)
+            download(apps, 'Apps.txt', 'application/txt');
         }
 
         function showSelect(e, obj) {
@@ -616,7 +625,6 @@
                                 var json_object = JSON.stringify(XL_row_object);
                                 jQuery('#xlx_json').val(json_object);
                                 var json1 = JSON.parse(json_object);
-                                diagram.startTransaction("make new node");
                                 for (d in json1) {
                                     var changedDate = "";
                                     const array2 = json1[d];
@@ -625,21 +633,41 @@
                                     var shutDownDate = array2["Shutdown date"];
                                     var changedStartDate = "";
                                     var changedShutDate = "";
-
+                                    var validity = false;
+                                    if (nodeName == null) {
+                                        break;
+                                    }
                                     if (startDate != null) //if dates exists, convert to json date format
                                         changedStartDate = changeDate(startDate);
                                     if (shutDownDate != null)
-                                        changedShutDate = changeDate(shutDownDate);    
+                                        changedShutDate = changeDate(shutDownDate);
 
                                     if (nodeName != null) { //Add only Applications with visible name and ID
                                         json1[d].name = array2["Name Application"]; //change property name of current App 
                                         json1[d].start = changedStartDate;
                                         json1[d].shutdown = changedShutDate;
-                                        diagram.model.addNodeData(json1[d]);
+                                        if (json1[d].shutdown > json1[d].start || json1[d].shutdown == "") // if shutdown is wrong
+                                            validity = true;
                                     }
+                                    diagram.startTransaction("make new node");
+                                    if (validity == true) { //if validity ist true, shutdown date is valid
+                                        var today = new Date().toJSON().slice(0, 10).replace(/-/g, '-'); //Json Date of today
+
+                                        if (json1[d].shutdown < today) {
+                                            json1[d].fill = "red";
+                                            saveDiagramProperties();
+                                        } else {
+                                            json1[d].fill = "green";
+                                            saveDiagramProperties();
+                                        }
+                                        diagram.model.addNodeData(json1[d]);
+
+
+                                    } //report unvalid Dataobjects
 
                                 }
                                 diagram.commitTransaction("make new node");
+
                             }
 
                         }
