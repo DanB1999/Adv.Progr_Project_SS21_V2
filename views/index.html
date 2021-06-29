@@ -481,7 +481,6 @@
             for (var i in appArray) {
                 var counter = 0;
                 for (var o in appArray) {
-                    console.log(appArray[o])
                     if (appArray[i] == appArray[o]) {
                         counter++
                         if (counter > 1) {
@@ -495,14 +494,13 @@
             for (var y in jsonDia.nodeDataArray) {
                 for (var t in appArray) {
                     if (appArray[t] == jsonDia.nodeDataArray[y].key) {
-                        apps.push("Name: " + nodeDataArray[y].name + "| Version: " + jsonDia.nodeDataArray[y].version + "| Release Date: " +
-                            jsonDia.nodeDataArray[y].start + "| Shutdown Date: " + jsonDia.nodeDataArray[y].shutdown + "| Source: " +
-                            jsonDia.nodeDataArray[y].source + "\n");
+                        apps.push(JSON.stringify(jsonDia.nodeDataArray[y]));
                     }
                 }
             }
-            console.log(apps)
-            download(apps, 'Apps.txt', 'application/txt');
+
+            ConvertToCSV(apps);
+            download(apps, 'PersonalDataApps.txt', 'application/txt');
         }
 
         function showSelect(e, obj) {
