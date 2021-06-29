@@ -229,6 +229,12 @@
             })
             isLinked = true;
         });
+        diagram.addDiagramListener("ObjectSingleClicked",
+            function(e) {
+                var part = e.subject.part;
+                if (part instanceof go.Node) console.log("Eventlinsteber object single clicked");
+            });
+
         diagram.addDiagramListener("ChangedSelection", function(e) {
             document.getElementById("propHeader").innerHTML = "Properties:";
             if (isExternal != true && isLinked != true) {
@@ -579,18 +585,18 @@
 
             for (var x in jsonDia.nodeDataArray) {
                 if (jsonDia.nodeDataArray[x].shutdown < today) {
-
-                    jsonDia.nodeDataArray[x].fill = "red";
+                    var data = diagram.model.findNodeDataForKey(jsonDia.nodeDataArray[x].key);
+                    diagram.model.setDataProperty(data, "fill", "red");
                     saveDiagramProperties();
 
+
                 } else {
-                    jsonDia.nodeDataArray[x].fill = "green";
+                    var data = diagram.model.findNodeDataForKey(jsonDia.nodeDataArray[x].key);
+                    diagram.model.setDataProperty(data, "fill", "green");
                     saveDiagramProperties();
                 }
             }
 
-            diagram.model = go.Model.fromJson(jsonDia);
-            document.getElementById("mySavedModel").value = diagram.model.toJson();
             diagram.isModified = false;
         }
 
@@ -669,15 +675,17 @@
                                 diagram.commitTransaction("make new node");
 
                             }
-
+                            document.getElementById("SaveButton").disabled = false;
                         }
 
                     )
                 };
+
                 reader.onerror = function(ex) {
                     console.log(ex);
                 };
                 reader.readAsBinaryString(file);
+
             };
         };
 
