@@ -29,6 +29,75 @@
         display: table;
         clear: both;
     }
+    .custom-file-input {
+    color: transparent;
+    }
+    .custom-file-input::-webkit-file-upload-button {
+     visibility: hidden;
+    }
+        .custom-file-input::before {
+        content: 'Select Excel File';
+        color: black;
+        display: inline-block;
+        background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+        border: 1px solid #999;
+        border-radius: 3px;
+        padding: 5px 8px;
+        outline: none;
+        white-space: nowrap;
+        cursor: pointer;
+        text-shadow: 1px 1px #fff;
+       
+        font-size: 10pt;
+        }
+        .custom-file-input:hover::before {
+        border-color: black;
+        }
+        .custom-file-input:active {
+        outline: 0;
+        }
+        .custom-file-input:active::before {
+        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
+        }
+
+        body {
+        padding: 20px;
+        }
+
+    .custom-input {
+    color: transparent;
+    }
+    .custom-input::-webkit-file-upload-button {
+     visibility: hidden;
+    }
+        .custom-input::before {
+        content: 'Select Json File';
+        color: black;
+        display: inline-block;
+        background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+        border: 1px solid #999;
+        border-radius: 3px;
+        padding: 5px 8px;
+        outline: none;
+        white-space: nowrap;
+        cursor: pointer;
+        text-shadow: 1px 1px #fff;
+       
+        font-size: 10pt;
+        }
+        .custom-input:hover::before {
+        border-color: black;
+        }
+        .custom-input:active {
+        outline: 0;
+        }
+        .custom-input:active::before {
+        background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
+        }
+
+        body {
+        padding: 20px;
+        }
 </style>
 
 <body>
@@ -61,25 +130,23 @@
             </div>
         </div>
         <!--<button id="SaveButton" onclick="save()">Save</button>  -->
-        <button onclick="load()">Load</button>
-        <label>Add nodes to Diagram (.xls)</label>
-        <input type="file" id="upload" name="files[]" accept=""></input>
-        <label>Load complete diagram from .json file</label>
-        <input type="file" onchange="readFile(event)" accept=".json"></input>
-        <button onclick="DownloadDataObject()">Download Data Objects</button>
-        <div class="footer" style="padding:2px">
+        <!--button onclick="load()">Load</button -->
+        <!--button style="display:block;width:120px; height:30px;" onclick="document.getElementById('upload').click()">Upload Excel File</button-->
+        <input class="custom-file-input" type="file" id="upload" name="files[]" accept=""></input-->
+        <!--label>Load complete diagram from .json file</label-->
+        <input class="custom-input" type="file" onchange="readFile(event)" accept=".json"></input>
+        <!--div class="footer" style="padding:2px">
             <textarea id="mySavedModel" style="width:100%;height:300px">
-	  </textarea>
-            <button id="SaveButton" onclick="toFile()">Download</button>
+	  </textarea-->
             <form ef='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
                 accept=".json"></input>
                 <input type="file" id="sampleFile" name="sampleFile" />
                 <input type='submit' value='Upload!' />
             </form>
         </div>
-        <div>
-            <button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button>
-        </div>
+        <div><button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button> 
+            <button onclick="DownloadDataObject()">Download Data Objects</button>
+            <button id="SaveButton" onclick="toFile()">Download</button></div>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
     <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
@@ -765,7 +832,7 @@
                     show: Inspector.showIfNode,
                     type: 'date'
                 },
-                "source": {
+                "sourcing": {
                     show: Inspector.showIfNode,
                     type: "select",
                     choices: function() {
