@@ -609,10 +609,42 @@
         }
 
         function toFile(event) {
-            jsonData = JSON.stringify(document.getElementById("mySavedModel").value);
+            jsonData = JSON.parse(diagram.model.toJson());
 
             download(jsonData, 'myDiagram.json', 'application/json');
         }
+
+        function sendFile() {
+			var contentType;
+			var url = "http://localhost:3000/upload";
+			var dataType = "json";
+			var json;
+			var method = 'post'; //document.getElementById('methods').value;
+			var message = JSON.parse(diagram.model.toJson());
+			var accept = 'application/json';
+			contentType = 'application/json; charset=utf-8';
+
+			//AJAX
+			var xmlhttp = new XMLHttpRequest();
+			if (method != "GET") {
+				xmlhttp.open(method, url, true);
+				xmlhttp.setRequestHeader('Content-type', contentType);
+				xmlhttp.setRequestHeader('Accept', accept)
+
+				xmlhttp.onload = function() {
+					var result = JSON.parse(xmlhttp.responseText);
+					if (xmlhttp.readyState == 4 && xmlhttp.status == "200") {
+						console.table(result);
+						//document.getElementById('result').innerHTML = "Student wurde hinzugefügt!";
+					} else {
+						document.getElementById('result').innerHTML = result;
+						console.error(result);
+					}
+				}
+				xmlhttp.send(json);
+			}
+		}
+
         var ExcelToJSON = function() {
             this.parseExcel = function(file) {
                 var reader = new FileReader();
@@ -724,8 +756,6 @@
             return newDate;
         }
 
-
-
         //download Data Objects from Diagram
         function DownloadDataObject() {
 
@@ -832,11 +862,11 @@
             text: "Daten",
             Description: ""
         }];
+       
         diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
         diagram.undoManager.isEnabled = true;
         //select a Node, so that the first Inspector shows something
         //diagram.select(diagram.nodes.first);
-
 
         var inspector = new Inspector("myInspectorDiv", diagram, {
             showIfNode: false,
