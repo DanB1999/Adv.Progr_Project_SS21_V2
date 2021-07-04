@@ -147,15 +147,11 @@
         <!--div class="footer" style="padding:2px">
             <textarea id="mySavedModel" style="width:100%;height:300px">
 	  </textarea-->
-        <form ef='uploadForm' id='uploadForm' action='/upload' method='post' encType="multipart/form-data">
-            accept=".json"></input>
-            <input type="file" id="sampleFile" name="sampleFile" />
-            <input type='submit' value='Upload!' />
-        </form>
     </div>
     <div><button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button>
         <button onclick="DownloadDataObject()">Download Data Objects</button>
         <button id="SaveButton" onclick="toFile()">Download</button></div>
+        <button id="unvalid" onclick="unvalidApp()" style="visibility:hidden;" >Download unvalid Apps</button>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
     <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
@@ -613,6 +609,7 @@
 
             download(jsonData, 'myDiagram.json', 'application/json');
         }
+        const unvaildApps=[];
         var ExcelToJSON = function() {
             this.parseExcel = function(file) {
                 var reader = new FileReader();
@@ -628,7 +625,7 @@
                                 var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                                 var json_object = JSON.stringify(XL_row_object);
                                 jQuery('#xlx_json').val(json_object);
-                                var json1 = JSON.parse(json_object);
+                                var json1 = JSON.parse(json_object);    
                                 for (d in json1) {
                                     var changedDate = "";
                                     const array2 = json1[d];
@@ -654,7 +651,7 @@
                                             validity = true;
                                     }
                                     diagram.startTransaction("make new node");
-                                    if (validity == true) { //if validity ist true, shutdown date is valid
+                                    if (validity === true) { //if validity ist true, shutdown date is valid
                                         var today = new Date().toJSON().slice(0, 10).replace(/-/g, '-'); //Json Date of today
 
                                         if (json1[d].shutdown < today) {
@@ -667,8 +664,14 @@
                                         diagram.model.addNodeData(json1[d]);
 
 
-                                    } //report unvalid Dataobjects
+                                    } else {
+                                        unvaildApps.push(json1[d].name + "\n");
+                                    }//report unvalid Dataobjects
 
+                                }
+                                if (unvaildApps.length = 0) {
+                                    document.getElementById('unvalid').style.visibility="visible"
+                                    alert("There were unvaild Apps in your excel sheet. A report were created. \n You can download it, see below")
                                 }
                                 diagram.commitTransaction("make new node");
 
@@ -687,6 +690,10 @@
             };
         };
 
+        function unvalidApp(){
+            download(unvaildApps, 'unvalid.txt', 'application/txt');
+            document.getElementById('unvalid').style.visibility="hidden";
+        }
         function changeDate(Date) { //change date of string to json format          mm.tt.jjjj -->   jjjj-mm-dd 
             //old Date  2d25/02
             //new Date  2502--2
