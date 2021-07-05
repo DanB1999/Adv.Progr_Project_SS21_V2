@@ -151,7 +151,7 @@
     <div><button id="selectApp" onclick="selectApp()">Download Apps working with personalData</button>
         <button onclick="DownloadDataObject()">Download Data Objects</button>
         <button id="SaveButton" onclick="toFile()">Download</button></div>
-        <button id="unvalid" onclick="unvalidApp()" style="visibility:hidden;" >Download unvalid Apps</button>
+    <button id="unvalid" onclick="unvalidApp()" style="visibility:hidden;">Download unvalid Apps</button>
     </div>
     <script type="text/javascript" src="javascripts/Figures.js"></script>
     <script type="text/javascript" src="javascripts/SnapLinkReshapingTool.js"></script>
@@ -496,7 +496,7 @@
             }
 
             ConvertToCSV(apps);
-            download(apps, 'PersonalDataApps.txt', 'application/txt');
+            download(apps, 'PersonalDataApps.csv', 'application/csv');
         }
 
         function showSelect(e, obj) {
@@ -609,7 +609,7 @@
 
             download(jsonData, 'myDiagram.json', 'application/json');
         }
-        const unvaildApps=[];
+        const unvaildApps = [];
         var ExcelToJSON = function() {
             this.parseExcel = function(file) {
                 var reader = new FileReader();
@@ -625,7 +625,7 @@
                                 var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                                 var json_object = JSON.stringify(XL_row_object);
                                 jQuery('#xlx_json').val(json_object);
-                                var json1 = JSON.parse(json_object);    
+                                var json1 = JSON.parse(json_object);
                                 for (d in json1) {
                                     var changedDate = "";
                                     const array2 = json1[d];
@@ -666,11 +666,11 @@
 
                                     } else {
                                         unvaildApps.push(json1[d].name + "\n");
-                                    }//report unvalid Dataobjects
+                                    } //report unvalid Dataobjects
 
                                 }
                                 if (unvaildApps.length != 0) {
-                                    document.getElementById('unvalid').style.visibility="visible"
+                                    document.getElementById('unvalid').style.visibility = "visible"
                                     alert("There were unvaild Apps in your excel sheet. A report were created. \n You can download it, see below")
                                 }
                                 diagram.commitTransaction("make new node");
@@ -690,10 +690,11 @@
             };
         };
 
-        function unvalidApp(){
+        function unvalidApp() {
             download(unvaildApps, 'unvalid.txt', 'application/txt');
-            document.getElementById('unvalid').style.visibility="hidden";
+            document.getElementById('unvalid').style.visibility = "hidden";
         }
+
         function changeDate(Date) { //change date of string to json format          mm.tt.jjjj -->   jjjj-mm-dd 
             //old Date  2d25/02
             //new Date  2502--2
@@ -738,7 +739,7 @@
 
             const jsonDia = JSON.parse(diagram.model.toJson());
             const csvData = ConvertToCSV(jsonData = jsonDia.linkDataArray)
-            download(csvData, 'DataObjects.txt', 'application/txt');
+            download(csvData, 'DataObjects.csv', 'application/CSV');
 
 
         }
@@ -746,6 +747,7 @@
         function ConvertToCSV(objArray) {
             var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
             var str = '';
+
 
             for (var i = 0; i < array.length; i++) {
                 var line = '';
@@ -831,12 +833,12 @@
         var linkDataArray = [{
             from: "node1",
             to: "node2",
-            text: "a Label",
+            name: "a Label",
             Description: "Datenkontrollfluss"
         }, {
             from: "node2",
             to: "node3",
-            text: "Daten",
+            name: "Daten",
             Description: ""
         }];
         diagram.model = new go.GraphLinksModel(nodeDataArray, linkDataArray);
