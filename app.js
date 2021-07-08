@@ -3,14 +3,10 @@ const fileUpload = require('express-fileupload');
 var express = require('express');
 var path = require('path');
 var fs = require('fs-extra');
+var ts = require('fs');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const port = 3000;
-
-//set default engine, and provide [handlebars as] extension
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 
 // view engine setup
@@ -22,9 +18,8 @@ app.use(cookieParser());
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', usersRouter);
-
 app.get('/', function(req, res) {
+
     res.sendFile(path.join(__dirname + '/views/index.html'));
 });
 app.listen(port, () => {
