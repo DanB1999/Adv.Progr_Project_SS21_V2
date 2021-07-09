@@ -353,26 +353,95 @@
         })
     }
 
+    var checkedvalues=[];
+    var text="";
     function selectDataObj(value) {
         diagram.selection.each(function (n) {
+            if(checkedvalues.includes(value)){
+            }else{
+                checkedvalues.push(value);}
+                var attributes=checkedvalues;
+            var attributes2=[];
+            console.log(checkedvalues);
+             const jsonDia = JSON.parse(diagram.model.toJson());
 
-            const jsonDia = JSON.parse(diagram.model.toJson());
+                //for (var x in jsonDia.linkDataArray) {
+                for(var x in jsonDia.linkDataArray){
+                    for (var y in attributes) {
 
-            for (var x in jsonDia.linkDataArray) {
-                if (jsonDia.linkDataArray[x].name == value) {
-                    n.data.Description = jsonDia.linkDataArray[x].Description;
-                    n.data.personalData = jsonDia.linkDataArray[x].personalData;
-                    n.data.name = jsonDia.linkDataArray[x].name;
-                    document.getElementById("SaveButton").disabled = false;
-                    break;
+                        if(jsonDia.linkDataArray[x].name==attributes[y]){
+                            n.data.Description = jsonDia.linkDataArray[x].Description;
+                            n.data.personalData = jsonDia.linkDataArray[x].personalData;
+                            n.data.name = jsonDia.linkDataArray[x].name;}}}
+                for (var i =0; i<attributes.length; i++){
+                    console.log(attributes[i]);
+                    if (text.includes(attributes[i])){
+
+                    }
+                    else{
+                        text+= attributes[i] + ", ";
                 }
-            }
-            //Update the HTML state of this Inspector with the given object.
-            inspector.inspectObject(n);
-            document.getElementById("descrDiv").value = n.data.Description;
+                    
 
-        })
-    }
+                    
+                }
+                n.data.name=text;
+                
+                //Update the HTML state of this Inspector with the given object.
+                //document.getElementById("descrDiv").value = n.data.Description;
+                if (checkedvalues.length > 1){
+                    n.data.Description = "";
+                    n.data.personalData=false;
+                    
+                }else{
+                    document.getElementById("descrDiv").value = n.data.Description;
+
+                }
+                
+                
+                
+
+                inspector.inspectObject(n);
+               
+                
+                
+
+                
+                
+                
+                
+
+                //text =text.substring(0, text.length-2);
+               // document.getElementById("descrDiv").value = n.data.Description;
+               diagram.addDiagramListener("ObjectSingleClicked",
+                       function(e) {
+                        var part = e.subject.part;
+                        if (part instanceof go.Link){
+                            
+                            
+
+                            //console.log("finish");
+                            text="";
+                            checkedvalues=[];
+                            attributes=[];
+                        }
+    });
+                diagram.addDiagramListener("LinkDrawn", function(e){
+                    var part = e.subject.part;
+                        if (part instanceof go.Link){
+                            //console.log("finish");
+                            text="";
+                            checkedvalues=[];
+                            attributes=[];}
+
+                })
+              
+            })
+        }
+            
+
+            
+        
 
     function selectApp() {
         const jsonDia = JSON.parse(diagram.model.toJson());
@@ -524,16 +593,24 @@
                 }
             }
         }
+        for (var i = 0; i<dataObjects.length; i++){
+               if (dataObjects[i] && dataObjects[i].includes(",")){
+                   dataObjects.splice(i,1);
+                   i--;
+                }}
+
+            console.log(dataObjects);
 
         if (obj instanceof go.Link) {
             e.diagram.selection.each(function (l) {
-                text += '<label>Choose from existing DataObjects</label>' +
-                    '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">' +
-                    '<option value="">Select</option>';
+                text += '<label>Choose from existing DataObjects</label>' ;
+                   // '<select name="dataObj" id="dataObj" onchange="selectDataObj(value)">' +
+                   // '<option value="">Select</option>';
 
-                for (i in dataObjects) {
-                    text += '<option value="' + dataObjects[i] + '">' + dataObjects[i] + '</option>'
-                }
+                    for (i in dataObjects) {
+                        
+                        text+='<br>'+'<input type="checkbox" id="dataObj" value="' + dataObjects[i] + '" onclick="selectDataObj(value)">' + dataObjects[i] + '</input>';}
+                
                 document.getElementById("select").innerHTML = text;
             })
             showDescr(e, obj);
@@ -594,8 +671,11 @@
                 saveDiagramProperties();
             }
         }
+        diagram.model = go.Model.fromJson(jsonDia);
+        document.getElementById("mySavedModel").value = diagram.model.toJson();
 
         diagram.isModified = false;
+
     }
 
     function download(content, fileName, contentType) {
